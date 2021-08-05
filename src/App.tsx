@@ -1,6 +1,5 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import QualificationMatrix from "./components/matrix/QualificationMatrix";
 import LoginPage from "./pages/Login";
 import MatrixPage from "./pages/Matrix";
 
