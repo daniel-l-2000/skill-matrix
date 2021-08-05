@@ -1,10 +1,22 @@
-import "./styles.css";
+import React from "react";
+import { Route, Switch } from "react-router-dom";
+import QualificationMatrix from "./components/matrix/QualificationMatrix";
+import LoginPage from "./pages/Login";
+import MatrixPage from "./pages/Matrix";
 
-export default function App() {
+function App() {
   return (
-    <div className="App">
-      <h1>Hello CodeSandbox</h1>
-      <h2>Start editing to see some magic happen!</h2>
+    <div>
+      <Switch>
+        <Route path="/" exact>
+          <LoginPage></LoginPage>
+        </Route>
+        <Route path="/matrix">
+          <MatrixPage></MatrixPage>
+        </Route>
+      </Switch>
     </div>
   );
 }
+
+export default App;
