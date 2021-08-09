@@ -1,12 +1,15 @@
 import { useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
+import { firebasePut, getUserId } from "../../util/firebase";
 import Backdrop from "../util/Backdrop";
+import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-level";
 
-function KnowledgeLevel(props: {
-  level: number;
-  skillIndex: number;
-  userIndex: number;
-}) {
+function KnowledgeLevel(
+  props: KnowledgeLevelModel & {
+    skillName: string;
+    onUpdateSkill: (level: KnowledgeLevelModel) => void;
+  }
+) {
   const [inEditMode, setInEditMode] = useState(false);
 
   const levelSelectRef = useRef<HTMLSelectElement>(null);
@@ -32,8 +35,17 @@ function KnowledgeLevel(props: {
   };
 
   const selectLevelHandler = () => {
-    console.log(levelSelectRef.current?.value);
-    setInEditMode(false);
+    const selectedLevel = levelSelectRef.current?.value;
+    if (selectedLevel) {
+      firebasePut(
+        "/users/" + getUserId() + "/skills/" + props.skillName + ".json",
+        { level: +selectedLevel }
+      ).then((_) => {
+        console.log("Skill updated");
+        props.onUpdateSkill({ ...props, level: +selectedLevel });
+        setInEditMode(false);
+      });
+    }
   };
 
   return (
@@ -54,7 +66,7 @@ function KnowledgeLevel(props: {
           <option value={1}>+</option>
           <option value={2}>++</option>
           <option value={3}>+++</option>
-          <option value={0}>Remove</option>
+          <option value={0}>{icon ? "Remove" : "Select"}</option>
         </select>
       ) : (
         icon

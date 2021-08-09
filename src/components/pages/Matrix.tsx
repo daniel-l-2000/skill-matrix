@@ -3,8 +3,9 @@ import User from "../matrix/User";
 import styles from "./Matrix.module.css";
 import Skill from "../matrix/Skill";
 import { useEffect, useState } from "react";
-import { firebaseGet } from "../../util/firebase";
+import { firebaseGet, getUserId } from "../../util/firebase";
 import { Data } from "../../models/data";
+import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-level";
 
 function MatrixPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -16,14 +17,6 @@ function MatrixPage() {
       setLoadedData(data);
     });
   }, []);
-
-  const knowledgeLevels = [
-    {
-      level: 2,
-      skillIndex: 1,
-      userIndex: 0
-    }
-  ];
 
   if (isLoading || !loadedData) {
     return <p>Loading...</p>;
@@ -38,6 +31,23 @@ function MatrixPage() {
   for (const user in loadedData?.users) {
     users.push(loadedData.users[user].name);
   }
+
+  const knowledgeLevels: KnowledgeLevelModel[] = [];
+  for (const userName of users) {
+    const user = loadedData.users[getUserId()];
+    for (const skill in user.skills) {
+      const level = user.skills[skill].level;
+      knowledgeLevels.push({
+        level,
+        skillIndex: skills.indexOf(skill),
+        userIndex: users.indexOf(userName)
+      });
+    }
+  }
+
+  const updateSkillHandler = (level: KnowledgeLevelModel) => {
+    console.log(level);
+  };
 
   return (
     <div className={styles.matrixGrid}>
@@ -59,6 +69,8 @@ function MatrixPage() {
               level={level?.level ?? 0}
               skillIndex={si}
               userIndex={ui}
+              skillName={s}
+              onUpdateSkill={updateSkillHandler}
             ></KnowledgeLevel>
           );
         });
