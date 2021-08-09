@@ -1,6 +1,6 @@
 import { FormEvent, useRef } from "react";
 import { useHistory } from "react-router-dom";
-import { firebasePut, getUserId } from "../util/firebase";
+import { firebasePut, getUserId } from "../../util/firebase";
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);

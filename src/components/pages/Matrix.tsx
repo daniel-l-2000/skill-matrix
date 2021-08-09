@@ -1,10 +1,10 @@
-import KnowledgeLevel from "../components/matrix/KnowledgeLevel";
-import User from "../components/matrix/User";
+import KnowledgeLevel from "../matrix/KnowledgeLevel";
+import User from "../matrix/User";
 import styles from "./Matrix.module.css";
-import Skill from "../components/matrix/Skill";
+import Skill from "../matrix/Skill";
 import { useEffect, useState } from "react";
-import { firebaseGet } from "../util/firebase";
-import { Data } from "../models/data";
+import { firebaseGet } from "../../util/firebase";
+import { Data } from "../../models/data";
 
 function MatrixPage() {
   const [isLoading, setIsLoading] = useState(true);

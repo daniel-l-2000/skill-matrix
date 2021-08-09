@@ -1,9 +1,9 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import Layout from "./components/layout/Layout";
-import LoginPage from "./pages/Login";
-import MatrixPage from "./pages/Matrix";
-import ProfilePage from "./pages/Profile";
+import LoginPage from "./components/pages/Login";
+import MatrixPage from "./components/pages/Matrix";
+import ProfilePage from "./components/pages/Profile";
 
 function App() {
   return (
