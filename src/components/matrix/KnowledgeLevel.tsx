@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
-import { firebasePut, getUserId } from "../../util/firebase";
+import { firebaseDelete, firebasePut, getUserId } from "../../util/firebase";
 import Backdrop from "../util/Backdrop";
 import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-level";
 
@@ -36,14 +36,22 @@ function KnowledgeLevel(
 
   const selectLevelHandler = () => {
     const selectedLevel = levelSelectRef.current?.value;
-    if (selectedLevel) {
+    if (selectedLevel === "0") {
+      firebaseDelete(
+        "/users/" + getUserId() + "/skills/" + props.skillName + ".json"
+      ).then((_) => {
+        console.log("Skill removed");
+        setInEditMode(false);
+        props.onUpdateSkill({ ...props, level: +selectedLevel });
+      });
+    } else if (selectedLevel) {
       firebasePut(
         "/users/" + getUserId() + "/skills/" + props.skillName + ".json",
         { level: +selectedLevel }
       ).then((_) => {
         console.log("Skill updated");
-        props.onUpdateSkill({ ...props, level: +selectedLevel });
         setInEditMode(false);
+        props.onUpdateSkill({ ...props, level: +selectedLevel });
       });
     }
   };
