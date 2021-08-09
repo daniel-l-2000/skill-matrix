@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
-import Backdrop from "../helper/Backdrop";
+import Backdrop from "../util/Backdrop";
 
 function KnowledgeLevel(props: {
   level: number;
