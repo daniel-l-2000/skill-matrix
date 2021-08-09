@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
 import Backdrop from "../helper/Backdrop";
 
@@ -8,6 +8,8 @@ function KnowledgeLevel(props: {
   personIndex: number;
 }) {
   const [inEditMode, setInEditMode] = useState(false);
+
+  const levelSelectRef = useRef<HTMLSelectElement>(null);
 
   let icon = props.level.toString();
   switch (props.level) {
@@ -29,6 +31,11 @@ function KnowledgeLevel(props: {
     setInEditMode(!inEditMode);
   };
 
+  const selectLevelHandler = () => {
+    console.log(levelSelectRef.current?.value);
+    setInEditMode(false);
+  };
+
   return (
     <div
       className="border-start border-top ps-1"
@@ -39,44 +46,30 @@ function KnowledgeLevel(props: {
     >
       {inEditMode ? (
         <select
-          className="form-select form-select-sm d-inline w-auto position-relative"
-          style={{
-            zIndex: 1050
-          }}
-          onChange={toggleEditModeHandler}
+          className="form-select form-select-sm d-inline w-auto position-relative before-backdrop"
+          onChange={selectLevelHandler}
           value={props.level}
+          ref={levelSelectRef}
         >
           <option value={1}>+</option>
           <option value={2}>++</option>
           <option value={3}>+++</option>
+          <option value={0}>Remove</option>
         </select>
       ) : (
         icon
       )}
 
-      {icon && (
-        <button
-          className={
-            "btn btn-" +
-            (inEditMode ? "" : "outline-") +
-            "secondary btn-sm shadow-none border-0 ms-1 position-relative"
-          }
-          style={{
-            zIndex: 1050
-          }}
-          onClick={toggleEditModeHandler}
-        >
-          {inEditMode ? (
-            <FaTimesCircle />
-          ) : (
-            <FaEdit
-              style={{
-                verticalAlign: "text-top"
-              }}
-            ></FaEdit>
-          )}
-        </button>
-      )}
+      <button
+        className={
+          "btn btn-" +
+          (inEditMode ? "" : "outline-") +
+          "secondary btn-sm shadow-none border-0 ms-1 position-relative before-backdrop"
+        }
+        onClick={toggleEditModeHandler}
+      >
+        {inEditMode ? <FaTimesCircle /> : <FaEdit />}
+      </button>
 
       {inEditMode && <Backdrop />}
     </div>
