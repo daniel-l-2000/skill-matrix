@@ -11,7 +11,11 @@ function ProfilePage() {
     ev.preventDefault();
 
     const enteredName = nameInputRef.current?.value;
-    firebasePut("/users/" + getUserId() + "/name.json", enteredName);
+    firebasePut("/users/" + getUserId() + "/name.json", enteredName).then(
+      (_) => {
+        console.log("Changes saved");
+      }
+    );
   };
 
   const logoutHandler = () => {
