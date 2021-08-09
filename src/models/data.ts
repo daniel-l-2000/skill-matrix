@@ -1,4 +1,11 @@
-import { User } from "./user";
+export interface SkillLevel {
+  level: number;
+}
+
+export interface User {
+  name: string;
+  skills: { [key: string]: SkillLevel };
+}
 
 export interface Skill {
   description: string;

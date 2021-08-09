@@ -5,7 +5,7 @@ import Backdrop from "../helper/Backdrop";
 function KnowledgeLevel(props: {
   level: number;
   skillIndex: number;
-  personIndex: number;
+  userIndex: number;
 }) {
   const [inEditMode, setInEditMode] = useState(false);
 
@@ -41,7 +41,7 @@ function KnowledgeLevel(props: {
       className="border-start border-top ps-1"
       style={{
         gridColumn: props.skillIndex + 2,
-        gridRow: props.personIndex + 2
+        gridRow: props.userIndex + 2
       }}
     >
       {inEditMode ? (

@@ -1,4 +1,4 @@
-function Person(props: { name: string; index: number }) {
+function User(props: { name: string; index: number }) {
   return (
     <div
       className="ps-1 pe-1 border-top d-flex align-items-center"
@@ -11,4 +11,4 @@ function Person(props: { name: string; index: number }) {
   );
 }
 
-export default Person;
+export default User;
