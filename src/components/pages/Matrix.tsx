@@ -2,25 +2,27 @@ import KnowledgeLevel from "../matrix/KnowledgeLevel";
 import User from "../matrix/User";
 import classes from "./Matrix.module.css";
 import Skill from "../matrix/Skill";
-import LoadingSpinner from "../util/LoadingSpinner";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { firebaseGet, getUserId } from "../../util/firebase";
 import { Data } from "../../models/data";
 import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-level";
+import LoadingContext from "../../store/loading-context";
 
 function MatrixPage() {
-  const [isLoading, setIsLoading] = useState(true);
   const [loadedData, setLoadedData] = useState<Data>();
 
+  const loadingContext = useContext(LoadingContext);
+
   useEffect(() => {
+    loadingContext.startLoading();
     firebaseGet<Data>("/.json").then((data) => {
-      setIsLoading(false);
+      loadingContext.stopLoading();
       setLoadedData(data);
     });
   }, []);
 
-  if (isLoading || !loadedData) {
-    return <LoadingSpinner />;
+  if (!loadedData) {
+    return <div></div>;
   }
 
   const skills: string[] = [];

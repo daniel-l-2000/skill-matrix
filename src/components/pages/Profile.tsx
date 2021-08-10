@@ -19,6 +19,7 @@ function ProfilePage() {
   };
 
   const logoutHandler = () => {
+    localStorage.clear();
     history.replace("/login");
   };
 
