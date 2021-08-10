@@ -10,9 +10,7 @@ export function httpRequest<T>(url: string, method: string, body?: any) {
         return json;
       }
 
-      return new Promise((_, reject) => {
-        reject(json);
-      });
+      return new Promise((_, reject) => reject(json));
     })
     .then((res) => res as T);
 }

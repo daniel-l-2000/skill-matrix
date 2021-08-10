@@ -2,6 +2,7 @@ import { useContext } from "react";
 import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
 import LoadingSpinner from "../util/LoadingSpinner";
+import ToastContainer from "../util/ToastContainer";
 import MainNavigation from "./MainNavigation";
 
 function Layout(props: { children: any }) {
@@ -13,6 +14,7 @@ function Layout(props: { children: any }) {
       {authContext.isLoggedIn && <MainNavigation />}
       <main className="p-2">{props.children}</main>
       {loadingContext.isLoading && <LoadingSpinner />}
+      <ToastContainer />
     </div>
   );
 }

@@ -11,11 +11,11 @@ export function LoadingContextProvider(props: { children: any }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const startLoading = () => {
-    setIsLoading((prev) => true);
+    setIsLoading(true);
   };
 
   const stopLoading = () => {
-    setIsLoading((prev) => false);
+    setIsLoading(false);
   };
 
   const context: LoadingContextModel = { isLoading, startLoading, stopLoading };

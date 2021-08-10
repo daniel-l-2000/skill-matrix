@@ -8,15 +8,20 @@ import { Data } from "../../models/data";
 import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-level";
 import LoadingContext from "../../store/loading-context";
 import { getUserId } from "../../util/identitytoolkit";
+import { useHistory } from "react-router-dom";
+import ToastContext from "../../store/toast-context";
 
 function MatrixPage() {
   const [loadedData, setLoadedData] = useState<Data>();
 
   const loadingContext = useContext(LoadingContext);
+  const toastContext = useContext(ToastContext);
+
+  const history = useHistory();
 
   useEffect(() => {
     loadingContext.startLoading();
-    firebaseGet<Data>("/.json").then((data) => {
+    firebaseGet<Data>("/.json", { toastContext, history }).then((data) => {
       loadingContext.stopLoading();
       setLoadedData(data);
     });

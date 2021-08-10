@@ -6,13 +6,16 @@ import { LoadingContextProvider } from "./store/loading-context";
 import { AuthContextProvider } from "./store/auth-context";
 
 import "./styles.css";
+import { ToastContextProvider } from "./store/toast-context";
 
 ReactDOM.render(
   <LoadingContextProvider>
     <AuthContextProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <ToastContextProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </ToastContextProvider>
     </AuthContextProvider>
   </LoadingContextProvider>,
   document.getElementById("root")

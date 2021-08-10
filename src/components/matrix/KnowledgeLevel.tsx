@@ -1,9 +1,11 @@
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
 import { firebaseDelete, firebasePut } from "../../util/firebase";
 import { getUserId } from "../../util/identitytoolkit";
 import Backdrop from "../util/Backdrop";
 import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-level";
+import ToastContext from "../../store/toast-context";
+import { useHistory } from "react-router-dom";
 
 function KnowledgeLevel(
   props: KnowledgeLevelModel & {
@@ -14,6 +16,10 @@ function KnowledgeLevel(
   const [inEditMode, setInEditMode] = useState(false);
 
   const levelSelectRef = useRef<HTMLSelectElement>(null);
+
+  const toastContext = useContext(ToastContext);
+
+  const history = useHistory();
 
   let icon = props.level.toString();
   switch (props.level) {
@@ -39,18 +45,19 @@ function KnowledgeLevel(
     const selectedLevel = levelSelectRef.current?.value;
     if (selectedLevel === "0") {
       firebaseDelete(
-        "/users/" + getUserId() + "/skills/" + props.skill + ".json"
-      ).then((_) => {
-        console.log("Skill removed");
+        "/users/" + getUserId() + "/skills/" + props.skill + ".json",
+        { toastContext, history }
+      ).then(() => {
+        toastContext.showToast("Skill removed");
         setInEditMode(false);
         props.onUpdateSkill({ ...props, level: +selectedLevel });
       });
     } else if (selectedLevel) {
       firebasePut(
         "/users/" + getUserId() + "/skills/" + props.skill + ".json",
-        { level: +selectedLevel }
-      ).then((_) => {
-        console.log("Skill updated");
+        { toastContext, history, body: { level: +selectedLevel } }
+      ).then(() => {
+        toastContext.showToast("Skill updated");
         setInEditMode(false);
         props.onUpdateSkill({ ...props, level: +selectedLevel });
       });

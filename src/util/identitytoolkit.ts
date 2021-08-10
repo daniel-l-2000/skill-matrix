@@ -1,10 +1,29 @@
+import { ToastContextModel } from "../store/toast-context-model";
 import { httpRequest } from "./http";
 
 const baseUrl = "https://identitytoolkit.googleapis.com/v1/accounts";
 const apiKey = "AIzaSyDLS3jH_aScYixlquSXwLyf37UY-cwrUjc";
 
-export function identitytoolkitPost(endpoint: string, body: any) {
-  return httpRequest<any>(baseUrl + endpoint + "?key=" + apiKey, "POST", body);
+export interface IdentitytoolkitRequestOptions {
+  body: any;
+  toastContext: ToastContextModel;
+}
+
+export function identitytoolkitPost(
+  endpoint: string,
+  options: IdentitytoolkitRequestOptions
+) {
+  return httpRequest<any>(
+    baseUrl + endpoint + "?key=" + apiKey,
+    "POST",
+    options.body
+  ).catch((reason) => {
+    let error = (reason?.error?.message as string) ?? "Unknown error";
+    error = error[0] + error.substring(1).toLowerCase().replace(/_/g, " ");
+    options.toastContext.showToast("Error", error);
+
+    return new Promise((_) => {});
+  });
 }
 
 export function getAuthToken() {

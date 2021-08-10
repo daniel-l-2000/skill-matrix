@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { User } from "../../models/user";
 import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
+import ToastContext from "../../store/toast-context";
 import { firebaseGet, firebasePut } from "../../util/firebase";
 import { clearSessionData, getUserId } from "../../util/identitytoolkit";
 
@@ -12,13 +13,17 @@ function ProfilePage() {
   const [name, setName] = useState("");
 
   const loadingContext = useContext(LoadingContext);
+  const toastContext = useContext(ToastContext);
   const authContext = useContext(AuthContext);
 
   const history = useHistory();
 
   useEffect(() => {
     loadingContext.startLoading();
-    firebaseGet<User>("/users/" + getUserId() + ".json").then((user) => {
+    firebaseGet<User>("/users/" + getUserId() + ".json", {
+      toastContext,
+      history
+    }).then((user) => {
       loadingContext.stopLoading();
       setName(user.name);
     });
@@ -28,11 +33,13 @@ function ProfilePage() {
     ev.preventDefault();
 
     const enteredName = nameInputRef.current?.value;
-    firebasePut("/users/" + getUserId() + "/name.json", enteredName).then(
-      (_) => {
-        console.log("Changes saved");
-      }
-    );
+    firebasePut("/users/" + getUserId() + "/name.json", {
+      toastContext,
+      history,
+      body: enteredName
+    }).then(() => {
+      toastContext.showToast("Changes saved");
+    });
   };
 
   const logoutHandler = () => {

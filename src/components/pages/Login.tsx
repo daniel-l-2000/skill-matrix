@@ -2,6 +2,7 @@ import { FormEvent, useContext, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
+import ToastContext from "../../store/toast-context";
 import {
   getAuthToken,
   identitytoolkitPost,
@@ -14,6 +15,7 @@ function LoginPage() {
 
   const loadingContext = useContext(LoadingContext);
   const authContext = useContext(AuthContext);
+  const toastContext = useContext(ToastContext);
 
   const history = useHistory();
 
@@ -31,9 +33,12 @@ function LoginPage() {
 
     loadingContext.startLoading();
     identitytoolkitPost(":signInWithPassword", {
-      email: emailInputRef.current?.value,
-      password: passwordInputRef.current?.value,
-      returnSecureToken: true
+      toastContext,
+      body: {
+        email: emailInputRef.current?.value,
+        password: passwordInputRef.current?.value,
+        returnSecureToken: true
+      }
     }).then((res) => {
       loadingContext.stopLoading();
       authContext.login();
