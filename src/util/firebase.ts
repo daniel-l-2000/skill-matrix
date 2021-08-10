@@ -3,9 +3,27 @@ import { getAuthToken } from "./identitytoolkit";
 
 const baseUrl = "https://skill-matrix-b5cd6-default-rtdb.firebaseio.com";
 
-function firebaseHttp<T>(resource: string, method: string, body?: any) {
+function firebaseHttp<T>(
+  resource: string,
+  method: string,
+  body?: any,
+  handleErrorInComponent = false
+) {
   const token = getAuthToken();
-  return httpRequest<T>(baseUrl + resource + "?auth=" + token, method, body);
+  let promise = httpRequest<T>(
+    baseUrl + resource + "?auth=" + token,
+    method,
+    body
+  );
+
+  if (!handleErrorInComponent) {
+    promise = promise.catch((reason) => {
+      console.log("toast error: " + JSON.stringify(reason));
+      return new Promise<T>((_) => {});
+    });
+  }
+
+  return promise;
 }
 
 export function firebaseGet<T>(resource: string) {
