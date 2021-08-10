@@ -1,3 +1,7 @@
 .before-backdrop {
   z-index: 1050;
 }
+
+.max-card-width {
+  max-width: 24rem;
+}

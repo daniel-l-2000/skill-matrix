@@ -7,7 +7,6 @@ import {
   identitytoolkitPost,
   setAuthToken
 } from "../../util/identitytoolkit";
-import classes from "./Login.module.css";
 
 function LoginPage() {
   const emailInputRef = useRef<HTMLInputElement>(null);
@@ -45,10 +44,7 @@ function LoginPage() {
 
   return (
     <div className="vh-100 d-flex justify-content-center align-items-center">
-      <form
-        className={"card p-3 w-100 " + classes.loginForm}
-        onSubmit={submitHandler}
-      >
+      <form className="card p-3 w-100 max-card-width" onSubmit={submitHandler}>
         <div className="mb-3">
           <label htmlFor="email">Email address</label>
           <input
