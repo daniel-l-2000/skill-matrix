@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function MainNavigation() {
   return (
@@ -20,12 +20,16 @@ function MainNavigation() {
         </button>
         <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div className="navbar-nav">
-            <Link className="nav-link" to="/matrix">
+            <NavLink className="nav-link" to="/matrix" activeClassName="active">
               Matrix
-            </Link>
-            <Link className="nav-link" to="/profile">
+            </NavLink>
+            <NavLink
+              className="nav-link"
+              to="/profile"
+              activeClassName="active"
+            >
               Profile
-            </Link>
+            </NavLink>
           </div>
         </div>
       </div>
