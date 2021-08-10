@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
-import { firebaseDelete, firebasePut, getUserId } from "../../util/firebase";
+import { firebaseDelete, firebasePut } from "../../util/firebase";
+import { getUserId } from "../../util/identitytoolkit";
 import Backdrop from "../util/Backdrop";
 import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-level";
 
@@ -81,7 +82,7 @@ function KnowledgeLevel(
       )}
 
       <button
-        className="btn btn-secondary btn-sm shadow-none border-0 ms-1 position-relative before-backdrop"
+        className="btn btn-outline-dark btn-sm shadow-none border-0 ms-1 position-relative before-backdrop"
         onClick={toggleEditModeHandler}
       >
         {inEditMode ? <FaTimesCircle /> : <FaEdit />}

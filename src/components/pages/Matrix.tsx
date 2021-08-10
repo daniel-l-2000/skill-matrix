@@ -3,10 +3,11 @@ import User from "../matrix/User";
 import classes from "./Matrix.module.css";
 import Skill from "../matrix/Skill";
 import { useContext, useEffect, useState } from "react";
-import { firebaseGet, getUserId } from "../../util/firebase";
+import { firebaseGet } from "../../util/firebase";
 import { Data } from "../../models/data";
 import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-level";
 import LoadingContext from "../../store/loading-context";
+import { getUserId } from "../../util/identitytoolkit";
 
 function MatrixPage() {
   const [loadedData, setLoadedData] = useState<Data>();

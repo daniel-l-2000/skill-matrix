@@ -1,6 +1,7 @@
 import { FormEvent, useRef } from "react";
 import { useHistory } from "react-router-dom";
-import { firebasePut, getUserId } from "../../util/firebase";
+import { firebasePut } from "../../util/firebase";
+import { getUserId } from "../../util/identitytoolkit";
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -20,7 +21,7 @@ function ProfilePage() {
 
   const logoutHandler = () => {
     localStorage.clear();
-    history.replace("/login");
+    history.replace("/");
   };
 
   return (
