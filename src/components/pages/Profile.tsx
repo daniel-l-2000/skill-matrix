@@ -1,10 +1,13 @@
-import { FormEvent, useRef } from "react";
+import { FormEvent, useContext, useRef } from "react";
 import { useHistory } from "react-router-dom";
+import AuthContext from "../../store/auth-context";
 import { firebasePut } from "../../util/firebase";
-import { getUserId } from "../../util/identitytoolkit";
+import { clearSessionData, getUserId } from "../../util/identitytoolkit";
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
+
+  const authContext = useContext(AuthContext);
 
   const history = useHistory();
 
@@ -20,7 +23,8 @@ function ProfilePage() {
   };
 
   const logoutHandler = () => {
-    localStorage.clear();
+    clearSessionData();
+    authContext.logout();
     history.replace("/");
   };
 

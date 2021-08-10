@@ -1,9 +1,10 @@
 import { httpRequest } from "./http";
+import { getAuthToken } from "./identitytoolkit";
 
 const baseUrl = "https://skill-matrix-b5cd6-default-rtdb.firebaseio.com";
 
 function firebaseHttp<T>(resource: string, method: string, body?: any) {
-  const token = localStorage.getItem("token");
+  const token = getAuthToken();
   return httpRequest<T>(baseUrl + resource + "?auth=" + token, method, body);
 }
 

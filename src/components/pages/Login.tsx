@@ -1,7 +1,12 @@
-import { FormEvent, useContext, useRef } from "react";
+import { FormEvent, useContext, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
+import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
-import { identitytoolkitPost } from "../../util/identitytoolkit";
+import {
+  getAuthToken,
+  identitytoolkitPost,
+  setAuthToken
+} from "../../util/identitytoolkit";
 import classes from "./Login.module.css";
 
 function LoginPage() {
@@ -9,8 +14,17 @@ function LoginPage() {
   const passwordInputRef = useRef<HTMLInputElement>(null);
 
   const loadingContext = useContext(LoadingContext);
+  const authContext = useContext(AuthContext);
 
   const history = useHistory();
+
+  useEffect(() => {
+    const token = getAuthToken();
+    if (token) {
+      authContext.login();
+      history.replace("/matrix");
+    }
+  }, [history]);
 
   const submitHandler = (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
@@ -22,7 +36,8 @@ function LoginPage() {
       returnSecureToken: true
     }).then((res) => {
       loadingContext.stopLoading();
-      localStorage.setItem("token", res.idToken);
+      authContext.login();
+      setAuthToken(res.idToken);
       history.replace("/matrix");
     });
   };
