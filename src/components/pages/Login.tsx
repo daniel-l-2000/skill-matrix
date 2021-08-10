@@ -19,12 +19,13 @@ function LoginPage() {
   const history = useHistory();
 
   useEffect(() => {
+    authContext.logout();
     const token = getAuthToken();
     if (token) {
       authContext.login();
       history.replace("/matrix");
     }
-  }, [history]);
+  }, [authContext, history]);
 
   const submitHandler = (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();

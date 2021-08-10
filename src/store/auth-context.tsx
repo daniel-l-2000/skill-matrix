@@ -8,7 +8,7 @@ const AuthContext = createContext<AuthContextModel>({
 });
 
 export function AuthContextProvider(props: { children: any }) {
-  const [isLoggedIn, setisLoggedIn] = useState(false);
+  const [isLoggedIn, setisLoggedIn] = useState(true);
 
   const login = () => {
     setisLoggedIn(true);
