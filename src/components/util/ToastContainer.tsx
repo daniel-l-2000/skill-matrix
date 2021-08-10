@@ -11,6 +11,8 @@ function ToastContainer() {
         <Toast
           key={+t.time}
           title={t.title}
+          icon={t.icon}
+          iconColor={t.iconColor}
           description={t.description}
           time={t.time}
         />

@@ -48,7 +48,7 @@ function KnowledgeLevel(
         "/users/" + getUserId() + "/skills/" + props.skill + ".json",
         { toastContext, history }
       ).then(() => {
-        toastContext.showToast("Skill removed");
+        toastContext.showToast("Skill removed", "info");
         setInEditMode(false);
         props.onUpdateSkill({ ...props, level: +selectedLevel });
       });
@@ -57,7 +57,7 @@ function KnowledgeLevel(
         "/users/" + getUserId() + "/skills/" + props.skill + ".json",
         { toastContext, history, body: { level: +selectedLevel } }
       ).then(() => {
-        toastContext.showToast("Skill updated");
+        toastContext.showToast("Skill updated", "info");
         setInEditMode(false);
         props.onUpdateSkill({ ...props, level: +selectedLevel });
       });

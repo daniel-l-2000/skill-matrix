@@ -1,4 +1,5 @@
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
+import { FaCheckCircle } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import { User } from "../../models/user";
 import AuthContext from "../../store/auth-context";
@@ -38,7 +39,7 @@ function ProfilePage() {
       history,
       body: enteredName
     }).then(() => {
-      toastContext.showToast("Changes saved");
+      toastContext.showToast("Changes saved", "success");
     });
   };
 
@@ -59,6 +60,7 @@ function ProfilePage() {
           <label htmlFor="name">Name</label>
           <input
             type="text"
+            maxLength={100}
             className="form-control"
             id="name"
             defaultValue={name}

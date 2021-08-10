@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import LoadingContext from "./loading-context";
-import { ToastContextModel, ToastData } from "./toast-context-model";
+import { IconType, ToastContextModel, ToastData } from "./toast-context-model";
 
 const ToastContext = createContext<ToastContextModel>({
   toasts: [],
@@ -12,8 +12,13 @@ export function ToastContextProvider(props: { children: any }) {
 
   const loadingContext = useContext(LoadingContext);
 
-  const showToast = (title: string, description?: string) => {
-    const toast: ToastData = { title, description, time: new Date() };
+  const showToast = (title: string, icon: IconType, description?: string) => {
+    const toast: ToastData = {
+      title,
+      icon,
+      description,
+      time: new Date()
+    };
     setToasts((prev) => [...prev, toast]);
     loadingContext.stopLoading();
     setTimeout(() => {

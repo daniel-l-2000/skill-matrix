@@ -27,7 +27,7 @@ function firebaseHttp<T>(
   if (!options.handleErrorInComponent) {
     promise = promise.catch((reason) => {
       const error = (reason?.error as string) ?? "Unknown error";
-      options.toastContext.showToast("Error", error);
+      options.toastContext.showToast("Error", "danger", error);
 
       if (error === "Auth token is expired") {
         clearSessionData();

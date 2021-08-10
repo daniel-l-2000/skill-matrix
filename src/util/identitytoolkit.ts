@@ -20,7 +20,7 @@ export function identitytoolkitPost(
   ).catch((reason) => {
     let error = (reason?.error?.message as string) ?? "Unknown error";
     error = error[0] + error.substring(1).toLowerCase().replace(/_/g, " ");
-    options.toastContext.showToast("Error", error);
+    options.toastContext.showToast("Error", "warning", error);
 
     return new Promise((_) => {});
   });
