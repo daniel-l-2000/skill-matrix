@@ -1,11 +1,4 @@
-export interface SkillLevel {
-  level: number;
-}
-
-export interface User {
-  name: string;
-  skills: { [key: string]: SkillLevel };
-}
+import { User } from "./user";
 
 export interface Skill {
   description: string;
