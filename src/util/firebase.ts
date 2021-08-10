@@ -1,4 +1,4 @@
-const baseUrl = "https://skill-matrix-b5cd6-default-rtdb.firebaseio.com/";
+const baseUrl = "https://skill-matrix-b5cd6-default-rtdb.firebaseio.com";
 
 function firebaseHttp<T>(resource: string, method: string, body?: any) {
   const token = localStorage.getItem("token");

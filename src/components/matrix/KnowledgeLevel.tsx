@@ -6,7 +6,7 @@ import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-le
 
 function KnowledgeLevel(
   props: KnowledgeLevelModel & {
-    skillName: string;
+    skill: string;
     onUpdateSkill: (level: KnowledgeLevelModel) => void;
   }
 ) {
@@ -38,7 +38,7 @@ function KnowledgeLevel(
     const selectedLevel = levelSelectRef.current?.value;
     if (selectedLevel === "0") {
       firebaseDelete(
-        "/users/" + getUserId() + "/skills/" + props.skillName + ".json"
+        "/users/" + getUserId() + "/skills/" + props.skill + ".json"
       ).then((_) => {
         console.log("Skill removed");
         setInEditMode(false);
@@ -46,7 +46,7 @@ function KnowledgeLevel(
       });
     } else if (selectedLevel) {
       firebasePut(
-        "/users/" + getUserId() + "/skills/" + props.skillName + ".json",
+        "/users/" + getUserId() + "/skills/" + props.skill + ".json",
         { level: +selectedLevel }
       ).then((_) => {
         console.log("Skill updated");
@@ -81,11 +81,7 @@ function KnowledgeLevel(
       )}
 
       <button
-        className={
-          "btn btn-" +
-          (inEditMode ? "" : "outline-") +
-          "secondary btn-sm shadow-none border-0 ms-1 position-relative before-backdrop"
-        }
+        className="btn btn-secondary btn-sm shadow-none border-0 ms-1 position-relative before-backdrop"
         onClick={toggleEditModeHandler}
       >
         {inEditMode ? <FaTimesCircle /> : <FaEdit />}

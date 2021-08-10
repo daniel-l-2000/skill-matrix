@@ -1,7 +1,8 @@
 import KnowledgeLevel from "../matrix/KnowledgeLevel";
 import User from "../matrix/User";
-import styles from "./Matrix.module.css";
+import classes from "./Matrix.module.css";
 import Skill from "../matrix/Skill";
+import LoadingSpinner from "../util/LoadingSpinner";
 import { useEffect, useState } from "react";
 import { firebaseGet, getUserId } from "../../util/firebase";
 import { Data } from "../../models/data";
@@ -19,7 +20,7 @@ function MatrixPage() {
   }, []);
 
   if (isLoading || !loadedData) {
-    return <p>Loading...</p>;
+    return <LoadingSpinner />;
   }
 
   const skills: string[] = [];
@@ -33,24 +34,31 @@ function MatrixPage() {
   }
 
   const knowledgeLevels: KnowledgeLevelModel[] = [];
-  for (const userName of users) {
-    const user = loadedData.users[getUserId()];
-    for (const skill in user.skills) {
-      const level = user.skills[skill].level;
+  for (const user of users) {
+    const userModel = loadedData.users[getUserId()];
+    for (const skill in userModel.skills) {
+      const level = userModel.skills[skill].level;
       knowledgeLevels.push({
         level,
         skillIndex: skills.indexOf(skill),
-        userIndex: users.indexOf(userName)
+        userIndex: users.indexOf(user)
       });
     }
   }
 
   const updateSkillHandler = (level: KnowledgeLevelModel) => {
-    console.log(level);
+    const skill = skills[level.skillIndex];
+    const user = loadedData.users[getUserId()];
+    if (user.skills) {
+      user.skills[skill] = { level: level.level };
+    } else {
+      user.skills = { [skill]: { level: level.level } };
+    }
+    setLoadedData({ ...loadedData });
   };
 
   return (
-    <div className={styles.matrixGrid}>
+    <div className={classes.matrixGrid}>
       {skills.map((s, i) => (
         <Skill name={s} index={i} key={s}></Skill>
       ))}
@@ -69,7 +77,7 @@ function MatrixPage() {
               level={level?.level ?? 0}
               skillIndex={si}
               userIndex={ui}
-              skillName={s}
+              skill={s}
               onUpdateSkill={updateSkillHandler}
             ></KnowledgeLevel>
           );
