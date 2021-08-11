@@ -7,7 +7,7 @@ import {
   getAuthToken,
   identitytoolkitPost,
   setAuthToken
-} from "../../util/identitytoolkit";
+} from "../../api/identitytoolkit";
 
 function LoginPage() {
   const emailInputRef = useRef<HTMLInputElement>(null);

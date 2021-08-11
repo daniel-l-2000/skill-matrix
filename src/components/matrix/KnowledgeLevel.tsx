@@ -1,17 +1,17 @@
 import { useContext, useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
-import { firebaseDelete, firebasePut } from "../../util/firebase";
-import { getUserId } from "../../util/identitytoolkit";
+import { firebaseDelete, firebasePut } from "../../api/firebase";
+import { getUserId } from "../../api/identitytoolkit";
 import Backdrop from "../util/Backdrop";
-import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-level";
 import ToastContext from "../../store/toast-context";
 import { useHistory } from "react-router-dom";
+import { LevelGridData } from "../pages/Matrix";
 
 function KnowledgeLevel(
-  props: KnowledgeLevelModel & {
+  props: LevelGridData & {
     skill: string;
     userId: string;
-    onUpdateSkill: (level: KnowledgeLevelModel) => void;
+    onUpdateSkill: (level: LevelGridData) => void;
   }
 ) {
   const [inEditMode, setInEditMode] = useState(false);
@@ -91,7 +91,10 @@ function KnowledgeLevel(
 
       {props.userId === getUserId() && (
         <button
-          className="btn btn-outline-dark btn-sm shadow-none border-0 ms-1 position-relative before-backdrop"
+          className={
+            "btn btn-outline-dark btn-sm shadow-none border-0 ms-1" +
+            (inEditMode ? " position-relative before-backdrop" : "")
+          }
           onClick={toggleEditModeHandler}
         >
           {inEditMode ? <FaTimesCircle /> : <FaEdit />}

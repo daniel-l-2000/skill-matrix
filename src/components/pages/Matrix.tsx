@@ -3,13 +3,22 @@ import User from "../matrix/User";
 import classes from "./Matrix.module.css";
 import Skill from "../matrix/Skill";
 import { useContext, useEffect, useState } from "react";
-import { firebaseGet } from "../../util/firebase";
-import { Data } from "../../models/data";
-import { UserWithId } from "../../models/user-with-id";
-import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-level";
+import { firebaseGet } from "../../api/firebase";
+import { Data } from "../../api/models/data";
 import LoadingContext from "../../store/loading-context";
 import { useHistory } from "react-router-dom";
 import ToastContext from "../../store/toast-context";
+
+interface UserWithId {
+  id: string;
+  name: string;
+}
+
+export interface LevelGridData {
+  level: number;
+  skillIndex: number;
+  userIndex: number;
+}
 
 function MatrixPage() {
   const [loadedData, setLoadedData] = useState<Data>();
@@ -41,7 +50,7 @@ function MatrixPage() {
     users.push({ id: user, name: loadedData.users[user].name });
   }
 
-  const knowledgeLevels: KnowledgeLevelModel[] = [];
+  const knowledgeLevels: LevelGridData[] = [];
   for (const user of users) {
     const userModel = loadedData.users[user.id];
     if (userModel) {
@@ -56,7 +65,7 @@ function MatrixPage() {
     }
   }
 
-  const updateSkillHandler = (level: KnowledgeLevelModel) => {
+  const updateSkillHandler = (level: LevelGridData) => {
     const skill = skills[level.skillIndex];
     const user = loadedData.users[users[level.userIndex].id];
     if (user.skills) {

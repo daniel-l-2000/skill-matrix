@@ -1,11 +1,11 @@
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { User } from "../../models/user";
+import { User } from "../../api/models/user";
 import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
-import { firebaseGet, firebasePut } from "../../util/firebase";
-import { clearSessionData, getUserId } from "../../util/identitytoolkit";
+import { firebaseGet, firebasePut } from "../../api/firebase";
+import { clearSessionData, getUserId } from "../../api/identitytoolkit";
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
