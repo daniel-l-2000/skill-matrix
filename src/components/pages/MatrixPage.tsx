@@ -1,6 +1,6 @@
 import KnowledgeLevel from "../matrix/KnowledgeLevel";
 import User from "../matrix/User";
-import classes from "./Matrix.module.css";
+import classes from "./MatrixPage.module.css";
 import Skill from "../matrix/Skill";
 import { useContext, useEffect, useState } from "react";
 import { firebaseGet } from "../../api/firebase";
