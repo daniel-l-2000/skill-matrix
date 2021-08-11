@@ -10,7 +10,6 @@ import { KnowledgeLevel as KnowledgeLevelModel } from "../../models/knowledge-le
 import LoadingContext from "../../store/loading-context";
 import { useHistory } from "react-router-dom";
 import ToastContext from "../../store/toast-context";
-import { getUserIdByName } from "../../util/helper-functions";
 
 function MatrixPage() {
   const [loadedData, setLoadedData] = useState<Data>();

@@ -1,4 +1,4 @@
-import { httpRequest } from "./helper-functions";
+import { httpRequest } from "./http";
 import { clearSessionData, getAuthToken } from "./identitytoolkit";
 import { History } from "history";
 import { ToastContextModel } from "../store/toast-context-model";
