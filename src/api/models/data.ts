@@ -1,8 +1,5 @@
 import { User } from "./user";
-
-export interface Skill {
-  description: string;
-}
+import { Skill } from "./skill";
 
 export interface Data {
   users: { [key: string]: User };
