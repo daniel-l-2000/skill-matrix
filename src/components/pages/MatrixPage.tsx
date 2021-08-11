@@ -66,14 +66,18 @@ function MatrixPage() {
   }
 
   const updateSkillHandler = (level: LevelGridData) => {
-    const skill = skills[level.skillIndex];
-    const user = loadedData.users[users[level.userIndex].id];
-    if (user.skills) {
-      user.skills[skill] = { level: level.level };
-    } else {
-      user.skills = { [skill]: { level: level.level } };
-    }
-    setLoadedData({ ...loadedData });
+    setLoadedData((prev) => {
+      const skill = skills[level.skillIndex];
+      const user = prev?.users[users[level.userIndex].id];
+      if (user) {
+        if (user.skills) {
+          user.skills[skill] = { level: level.level };
+        } else {
+          user.skills = { [skill]: { level: level.level } };
+        }
+      }
+      return prev ? { ...prev } : undefined;
+    });
   };
 
   return (

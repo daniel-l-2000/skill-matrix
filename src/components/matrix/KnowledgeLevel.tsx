@@ -39,7 +39,7 @@ function KnowledgeLevel(
   }
 
   const toggleEditModeHandler = () => {
-    setInEditMode(!inEditMode);
+    setInEditMode((prev) => !prev);
   };
 
   const selectLevelHandler = () => {
