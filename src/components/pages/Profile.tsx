@@ -1,5 +1,4 @@
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
-import { FaCheckCircle } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 import { User } from "../../models/user";
 import AuthContext from "../../store/auth-context";
@@ -26,7 +25,7 @@ function ProfilePage() {
       history
     }).then((user) => {
       loadingContext.stopLoading();
-      setName(user.name);
+      setName(user?.name);
     });
   }, []);
 

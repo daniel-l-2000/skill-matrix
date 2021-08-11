@@ -1,5 +1,5 @@
 import { ToastContextModel } from "../store/toast-context-model";
-import { httpRequest } from "./http";
+import { httpRequest } from "./helper-functions";
 
 const baseUrl = "https://identitytoolkit.googleapis.com/v1/accounts";
 const apiKey = "AIzaSyDLS3jH_aScYixlquSXwLyf37UY-cwrUjc";

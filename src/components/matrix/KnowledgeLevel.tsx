@@ -10,6 +10,7 @@ import { useHistory } from "react-router-dom";
 function KnowledgeLevel(
   props: KnowledgeLevelModel & {
     skill: string;
+    userId: string;
     onUpdateSkill: (level: KnowledgeLevelModel) => void;
   }
 ) {
@@ -45,7 +46,7 @@ function KnowledgeLevel(
     const selectedLevel = levelSelectRef.current?.value;
     if (selectedLevel === "0") {
       firebaseDelete(
-        "/users/" + getUserId() + "/skills/" + props.skill + ".json",
+        "/users/" + props.userId + "/skills/" + props.skill + ".json",
         { toastContext, history }
       ).then(() => {
         toastContext.showToast("Skill removed", "info");
@@ -54,7 +55,7 @@ function KnowledgeLevel(
       });
     } else if (selectedLevel) {
       firebasePut(
-        "/users/" + getUserId() + "/skills/" + props.skill + ".json",
+        "/users/" + props.userId + "/skills/" + props.skill + ".json",
         { toastContext, history, body: { level: +selectedLevel } }
       ).then(() => {
         toastContext.showToast("Skill updated", "info");
@@ -88,12 +89,14 @@ function KnowledgeLevel(
         icon
       )}
 
-      <button
-        className="btn btn-outline-dark btn-sm shadow-none border-0 ms-1 position-relative before-backdrop"
-        onClick={toggleEditModeHandler}
-      >
-        {inEditMode ? <FaTimesCircle /> : <FaEdit />}
-      </button>
+      {props.userId === getUserId() && (
+        <button
+          className="btn btn-outline-dark btn-sm shadow-none border-0 ms-1 position-relative before-backdrop"
+          onClick={toggleEditModeHandler}
+        >
+          {inEditMode ? <FaTimesCircle /> : <FaEdit />}
+        </button>
+      )}
 
       {inEditMode && <Backdrop />}
     </div>
