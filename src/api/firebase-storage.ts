@@ -15,11 +15,11 @@ export function firebaseStoragePost(
   options: FirebaseStorageRequestOptions
 ) {
   return httpRequest<any>(
-    STORAGE_BASE_URL + encodeURIComponent(filePath),
+    `${STORAGE_BASE_URL}${encodeURIComponent(filePath)}`,
     "POST",
     options.body,
     {
-      Authorization: "Firebase " + getAuthToken(),
+      Authorization: `Firebase ${getAuthToken()}`,
       "Content-Type": options.body.type
     }
   ).catch((reason) => {

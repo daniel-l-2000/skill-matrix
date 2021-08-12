@@ -27,7 +27,7 @@ function Toast(props: ToastData) {
   return (
     <div className="toast show" role="alert">
       <div className="toast-header">
-        <small className={"me-1 text-" + props.icon}>{icon}</small>
+        <small className={`me-1 text-${props.icon}`}>{icon}</small>
         <strong className="me-auto">{props.title}</strong>
         <small className="text-muted">{props.time.toLocaleTimeString()}</small>
       </div>

@@ -14,12 +14,12 @@ export function identitytoolkitPost(
   options: IdentitytoolkitRequestOptions
 ) {
   return httpRequest<any>(
-    baseUrl + endpoint + "?key=" + apiKey,
+    `${baseUrl}${endpoint}?key=${apiKey}`,
     "POST",
     options.body
   ).catch((reason) => {
     let error = (reason?.error?.message as string) ?? "Unknown error";
-    error = error[0] + error.substring(1).toLowerCase().replace(/_/g, " ");
+    error = `${error[0]}${error.substring(1).toLowerCase().replace(/_/g, " ")}`;
     options.toastContext.showToast("Error", "warning", error);
 
     return new Promise((_) => {});

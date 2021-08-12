@@ -96,7 +96,7 @@ function MatrixPage() {
           );
           return (
             <KnowledgeLevel
-              key={s + "_" + u.id}
+              key={`${s}_${u.id}`}
               level={level?.level ?? 0}
               skillIndex={si}
               userIndex={ui}

@@ -5,7 +5,7 @@ import { getUserId } from "../../api/identitytoolkit";
 import Backdrop from "../util/Backdrop";
 import ToastContext from "../../store/toast-context";
 import { useHistory } from "react-router-dom";
-import { LevelGridData } from "../pages/Matrix";
+import { LevelGridData } from "../pages/MatrixPage";
 
 function KnowledgeLevel(
   props: LevelGridData & {
@@ -45,19 +45,20 @@ function KnowledgeLevel(
   const selectLevelHandler = () => {
     const selectedLevel = levelSelectRef.current?.value;
     if (selectedLevel === "0") {
-      firebaseDelete(
-        "/users/" + props.userId + "/skills/" + props.skill + ".json",
-        { toastContext, history }
-      ).then(() => {
+      firebaseDelete(`/users/${props.userId}/skills/${props.skill}.json`, {
+        toastContext,
+        history
+      }).then(() => {
         toastContext.showToast("Skill removed", "info");
         setInEditMode(false);
         props.onUpdateSkill({ ...props, level: +selectedLevel });
       });
     } else if (selectedLevel) {
-      firebasePut(
-        "/users/" + props.userId + "/skills/" + props.skill + ".json",
-        { toastContext, history, body: { level: +selectedLevel } }
-      ).then(() => {
+      firebasePut(`/users/${props.userId}/skills/${props.skill}.json`, {
+        toastContext,
+        history,
+        body: { level: +selectedLevel }
+      }).then(() => {
         toastContext.showToast("Skill updated", "info");
         setInEditMode(false);
         props.onUpdateSkill({ ...props, level: +selectedLevel });
@@ -91,10 +92,9 @@ function KnowledgeLevel(
 
       {props.userId === getUserId() && (
         <button
-          className={
-            "btn btn-outline-dark btn-sm shadow-none border-0 ms-1" +
-            (inEditMode ? " position-relative before-backdrop" : "")
-          }
+          className={`btn btn-outline-dark btn-sm shadow-none border-0 ms-1 ${
+            inEditMode ? "position-relative before-backdrop" : ""
+          }`}
           onClick={toggleEditModeHandler}
         >
           {inEditMode ? <FaTimesCircle /> : <FaEdit />}

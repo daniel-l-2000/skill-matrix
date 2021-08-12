@@ -36,14 +36,16 @@ function ProfilePage() {
 
   useEffect(() => {
     loadingContext.startLoading();
-    firebaseGet<User>("/users/" + getUserId() + ".json", {
+    firebaseGet<User>(`/users/${getUserId()}.json`, {
       toastContext,
       history
     }).then((user) => {
       loadingContext.stopLoading();
       setName(user?.name);
       if (user?.profilePictureToken) {
-        setProfilePictureUrl(profilePictureUrl1 + user.profilePictureToken);
+        setProfilePictureUrl(
+          `${profilePictureUrl1}${user.profilePictureToken}`
+        );
       }
     });
   }, []);
@@ -52,7 +54,7 @@ function ProfilePage() {
     ev.preventDefault();
 
     const enteredName = nameInputRef.current?.value;
-    firebasePut("/users/" + getUserId() + "/name.json", {
+    firebasePut(`/users/${getUserId()}/name.json`, {
       toastContext,
       history,
       body: enteredName
@@ -88,7 +90,7 @@ function ProfilePage() {
             history
           }).then(() => {
             loadingContext.stopLoading();
-            setProfilePictureUrl(profilePictureUrl1 + res.downloadTokens);
+            setProfilePictureUrl(`${profilePictureUrl1}${res.downloadTokens}`);
             toastContext.showToast("Profile picture changed", "success");
           });
         });
@@ -107,7 +109,7 @@ function ProfilePage() {
               className="border rounded p-1 me-2"
             />
           ) : (
-            <FaUserCircle size="2.5rem" className="me-2" />
+            <FaUserCircle size="2rem" className="me-2" />
           )}
           <button
             type="button"

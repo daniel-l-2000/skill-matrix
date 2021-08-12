@@ -19,7 +19,7 @@ function firebaseHttp<T>(
 ) {
   const token = getAuthToken();
   let promise = httpRequest<T>(
-    baseUrl + resource + "?auth=" + token,
+    `${baseUrl}${resource}?auth=${token}`,
     method,
     options.body
   );
