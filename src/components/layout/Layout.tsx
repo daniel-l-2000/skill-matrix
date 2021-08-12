@@ -11,7 +11,7 @@ function Layout(props: { children: any }) {
 
   return (
     <div>
-      {authContext.isLoggedIn && <MainNavigation />}
+      {authContext.isSignedIn && <MainNavigation />}
       <main className="p-2">{props.children}</main>
       {loadingContext.isLoading && <LoadingSpinner />}
       <ToastContainer />

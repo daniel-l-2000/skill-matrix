@@ -1,7 +1,13 @@
-export function httpRequest<T>(url: string, method: string, body?: any) {
+export function httpRequest<T>(
+  url: string,
+  method: string,
+  body?: any,
+  headers?: Record<string, string>
+) {
   return fetch(url, {
     method,
-    body: JSON.stringify(body)
+    body: body instanceof File ? body : JSON.stringify(body),
+    headers
   })
     .then(async (res) => {
       const json = await res.json();

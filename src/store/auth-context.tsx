@@ -2,23 +2,23 @@ import { createContext, useState } from "react";
 import { AuthContextModel } from "./auth-context-model";
 
 const AuthContext = createContext<AuthContextModel>({
-  isLoggedIn: false,
-  login: () => {},
-  logout: () => {}
+  isSignedIn: false,
+  signIn: () => {},
+  signOut: () => {}
 });
 
 export function AuthContextProvider(props: { children: any }) {
-  const [isLoggedIn, setisLoggedIn] = useState(true);
+  const [isSignedIn, setisSignedIn] = useState(true);
 
-  const login = () => {
-    setisLoggedIn(true);
+  const signIn = () => {
+    setisSignedIn(true);
   };
 
-  const logout = () => {
-    setisLoggedIn(false);
+  const signOut = () => {
+    setisSignedIn(false);
   };
 
-  const context: AuthContextModel = { isLoggedIn, login, logout };
+  const context: AuthContextModel = { isSignedIn, signIn, signOut };
 
   return (
     <AuthContext.Provider value={context}>
