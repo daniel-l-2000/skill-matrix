@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import Layout from "./components/layout/Layout";
-import LoginPage from "./components/pages/LoginPage";
+import SignInPage from "./components/pages/SignInPage";
 import MatrixPage from "./components/pages/MatrixPage";
 import ProfilePage from "./components/pages/ProfilePage";
 
@@ -10,7 +10,7 @@ function App() {
     <Layout>
       <Switch>
         <Route path="/" exact>
-          <LoginPage></LoginPage>
+          <SignInPage></SignInPage>
         </Route>
         <Route path="/matrix">
           <MatrixPage></MatrixPage>

@@ -6,9 +6,11 @@ import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
 import { firebaseGet, firebasePut } from "../../api/firebase";
 import { clearSessionData, getUserId } from "../../api/identitytoolkit";
+import { FaEdit, FaSave, FaSignOutAlt } from "react-icons/fa";
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState("");
 
@@ -42,18 +44,45 @@ function ProfilePage() {
     });
   };
 
-  const logoutHandler = () => {
+  const signOutHandler = () => {
     clearSessionData();
-    authContext.logout();
+    authContext.signOut();
     history.replace("/");
+  };
+
+  const changePicHandler = () => {
+    fileInputRef.current?.click();
+  };
+
+  const fileChangeHandler = () => {
+    console.log(fileInputRef.current?.files[0]);
   };
 
   return (
     <div className="d-flex justify-content-center">
       <form className="card p-2 w-100 max-card-width" onSubmit={submitHandler}>
-        <div>
-          <label htmlFor="profilePicture">Profile Picture</label>
-          <input type="url" className="form-control" id="profilePicture" />
+        <div className="d-flex justify-content-center align-items-center">
+          <img
+            src="https://picsum.photos/200/300"
+            alt="No pic"
+            width="85"
+            height="85"
+            className="border rounded p-1 me-2"
+          />
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={changePicHandler}
+          >
+            <FaEdit className="me-1" />
+            Change
+          </button>
+          <input
+            type="file"
+            className="d-none"
+            onChange={fileChangeHandler}
+            ref={fileInputRef}
+          />
         </div>
         <div className="mt-2">
           <label htmlFor="name">Name</label>
@@ -68,14 +97,16 @@ function ProfilePage() {
         </div>
         <div className="mt-2 d-flex justify-content-between">
           <button className="btn btn-primary" type="submit">
+            <FaSave className="me-1" />
             Save
           </button>
           <button
             className="btn btn-secondary ms-1"
             type="button"
-            onClick={logoutHandler}
+            onClick={signOutHandler}
           >
-            Logout
+            <FaSignOutAlt className="me-1" />
+            Sign out
           </button>
         </div>
       </form>

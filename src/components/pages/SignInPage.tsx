@@ -8,8 +8,9 @@ import {
   identitytoolkitPost,
   setAuthToken
 } from "../../api/identitytoolkit";
+import { FaSignInAlt } from "react-icons/fa";
 
-function LoginPage() {
+function SignInPage() {
   const emailInputRef = useRef<HTMLInputElement>(null);
   const passwordInputRef = useRef<HTMLInputElement>(null);
 
@@ -20,10 +21,10 @@ function LoginPage() {
   const history = useHistory();
 
   useEffect(() => {
-    authContext.logout();
+    authContext.signOut();
     const token = getAuthToken();
     if (token) {
-      authContext.login();
+      authContext.signIn();
       history.replace("/matrix");
     }
   }, [authContext, history]);
@@ -41,7 +42,7 @@ function LoginPage() {
       }
     }).then((res) => {
       loadingContext.stopLoading();
-      authContext.login();
+      authContext.signIn();
       setAuthToken(res.idToken);
       history.replace("/matrix");
     });
@@ -72,7 +73,8 @@ function LoginPage() {
         </div>
         <div className="d-flex flex-row-reverse">
           <button type="submit" className="btn btn-primary">
-            Login
+            <FaSignInAlt className="me-1" />
+            Sign in
           </button>
         </div>
       </form>
@@ -80,4 +82,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default SignInPage;
