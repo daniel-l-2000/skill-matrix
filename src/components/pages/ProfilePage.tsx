@@ -6,19 +6,33 @@ import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
 import { firebaseGet, firebasePut } from "../../api/firebase";
 import { clearSessionData, getUserId } from "../../api/identitytoolkit";
-import { FaEdit, FaSave, FaSignOutAlt } from "react-icons/fa";
+import { FaEdit, FaSave, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
+import {
+  firebaseStoragePost,
+  STORAGE_BASE_URL
+} from "../../api/firebase-storage";
+import styled from "styled-components";
+
+const Thumbnail = styled.img`
+  max-width: 100px;
+  max-height: 100px;
+`;
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState<string>();
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string>();
 
   const loadingContext = useContext(LoadingContext);
   const toastContext = useContext(ToastContext);
   const authContext = useContext(AuthContext);
 
   const history = useHistory();
+
+  const filePath = encodeURIComponent(`users/${getUserId()}/profilePicture`);
+  const profilePictureUrl1 = `${STORAGE_BASE_URL}${filePath}?alt=media&token=`;
 
   useEffect(() => {
     loadingContext.startLoading();
@@ -28,6 +42,9 @@ function ProfilePage() {
     }).then((user) => {
       loadingContext.stopLoading();
       setName(user?.name);
+      if (user?.profilePictureToken) {
+        setProfilePictureUrl(profilePictureUrl1 + user.profilePictureToken);
+      }
     });
   }, []);
 
@@ -55,20 +72,43 @@ function ProfilePage() {
   };
 
   const fileChangeHandler = () => {
-    console.log(fileInputRef.current?.files[0]);
+    const file = fileInputRef.current?.files && fileInputRef.current.files[0];
+    if (file) {
+      if (file.size >= 2 * 1024 * 1024) {
+        toastContext.showToast("File must be less than 2 MB", "warning");
+      } else {
+        loadingContext.startLoading();
+        firebaseStoragePost(`users/${getUserId()}/profilePicture`, {
+          body: file,
+          toastContext
+        }).then((res) => {
+          firebasePut(`/users/${getUserId()}/profilePictureToken.json`, {
+            body: res.downloadTokens,
+            toastContext,
+            history
+          }).then(() => {
+            loadingContext.stopLoading();
+            setProfilePictureUrl(profilePictureUrl1 + res.downloadTokens);
+            toastContext.showToast("Profile picture changed", "success");
+          });
+        });
+      }
+    }
   };
 
   return (
     <div className="d-flex justify-content-center">
       <form className="card p-2 w-100 max-card-width" onSubmit={submitHandler}>
         <div className="d-flex justify-content-center align-items-center">
-          <img
-            src="https://picsum.photos/200/300"
-            alt="No pic"
-            width="85"
-            height="85"
-            className="border rounded p-1 me-2"
-          />
+          {profilePictureUrl ? (
+            <Thumbnail
+              src={profilePictureUrl}
+              alt="No pic"
+              className="border rounded p-1 me-2"
+            />
+          ) : (
+            <FaUserCircle size="2.5rem" className="me-2" />
+          )}
           <button
             type="button"
             className="btn btn-primary"

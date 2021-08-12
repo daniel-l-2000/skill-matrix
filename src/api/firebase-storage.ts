@@ -2,8 +2,8 @@ import { ToastContextModel } from "../store/toast-context-model";
 import { httpRequest } from "./http";
 import { getAuthToken } from "./identitytoolkit";
 
-const baseUrl =
-  "https://firebasestorage.googleapis.com/v0/b/skill-matrix-b5cd6.appspot.com/o?name=";
+export const STORAGE_BASE_URL =
+  "https://firebasestorage.googleapis.com/v0/b/skill-matrix-b5cd6.appspot.com/o/";
 
 export interface FirebaseStorageRequestOptions {
   body: File;
@@ -15,12 +15,12 @@ export function firebaseStoragePost(
   options: FirebaseStorageRequestOptions
 ) {
   return httpRequest<any>(
-    baseUrl + encodeURIComponent(filePath),
+    STORAGE_BASE_URL + encodeURIComponent(filePath),
     "POST",
     options.body,
     {
-      authorization: "Firebase " + getAuthToken(),
-      "Content-Type": "image/jpeg"
+      Authorization: "Firebase " + getAuthToken(),
+      "Content-Type": options.body.type
     }
   ).catch((reason) => {
     const error = (reason?.error?.message as string) ?? "Unknown error";

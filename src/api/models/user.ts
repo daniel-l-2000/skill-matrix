@@ -4,5 +4,6 @@ export interface SkillLevel {
 
 export interface User {
   name: string;
+  profilePictureToken: string;
   skills: { [key: string]: SkillLevel };
 }

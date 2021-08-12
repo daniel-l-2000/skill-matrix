@@ -18,5 +18,5 @@ export function httpRequest<T>(
 
       return new Promise((_, reject) => reject(json));
     })
-    .then((res) => res as T);
+    .then((res) => res as T | undefined);
 }
