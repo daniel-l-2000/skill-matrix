@@ -1,3 +1,13 @@
+import { ToastContextModel } from "../store/toast-context-model";
+import { History } from "history";
+
+export class RequestOptions {
+  body?: any;
+  handleErrorInComponent? = false;
+  toastContext!: ToastContextModel;
+  history!: History;
+}
+
 export function httpRequest<T>(
   url: string,
   method: string,

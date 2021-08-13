@@ -1,6 +1,6 @@
 import { ToastContextModel } from "../store/toast-context-model";
 import { httpRequest } from "./http";
-import { getAuthToken } from "./identitytoolkit";
+import { getAuthToken } from "./auth";
 
 export const STORAGE_BASE_URL =
   "https://firebasestorage.googleapis.com/v0/b/skill-matrix-b5cd6.appspot.com/o/";
