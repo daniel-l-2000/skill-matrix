@@ -5,15 +5,15 @@ import { getUserId } from "../../api/identitytoolkit";
 import Backdrop from "../util/Backdrop";
 import ToastContext from "../../store/toast-context";
 import { useHistory } from "react-router-dom";
-import { LevelGridData } from "../pages/MatrixPage";
 
-function KnowledgeLevel(
-  props: LevelGridData & {
-    skill: string;
-    userId: string;
-    onUpdateSkill: (level: LevelGridData) => void;
-  }
-) {
+function KnowledgeLevel(props: {
+  level: number;
+  skillIndex: number;
+  userIndex: number;
+  skill: string;
+  userId: string;
+  onUpdateSkill: (level: number, skillIndex: number, userIndex: number) => void;
+}) {
   const [inEditMode, setInEditMode] = useState(false);
 
   const levelSelectRef = useRef<HTMLSelectElement>(null);
@@ -51,7 +51,7 @@ function KnowledgeLevel(
       }).then(() => {
         toastContext.showToast("Skill removed", "info");
         setInEditMode(false);
-        props.onUpdateSkill({ ...props, level: +selectedLevel });
+        props.onUpdateSkill(+selectedLevel, props.skillIndex, props.userIndex);
       });
     } else if (selectedLevel) {
       firebasePut(`/users/${props.userId}/skills/${props.skill}.json`, {
@@ -61,7 +61,7 @@ function KnowledgeLevel(
       }).then(() => {
         toastContext.showToast("Skill updated", "info");
         setInEditMode(false);
-        props.onUpdateSkill({ ...props, level: +selectedLevel });
+        props.onUpdateSkill(+selectedLevel, props.skillIndex, props.userIndex);
       });
     }
   };
