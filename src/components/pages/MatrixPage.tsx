@@ -41,18 +41,21 @@ function MatrixPage() {
   }
 
   const skills: string[] = [];
-  for (const skill in loadedData?.skills) {
+  for (const skill in loadedData.skills) {
     skills.push(skill);
   }
 
   const users: UserWithId[] = [];
-  for (const user in loadedData?.users) {
-    users.push({ id: user, name: loadedData.users[user].name });
+  for (const user in loadedData.users) {
+    const name = loadedData.users[user].name;
+    if (name) {
+      users.push({ id: user, name });
+    }
   }
 
   const knowledgeLevels: LevelGridData[] = [];
   for (const user of users) {
-    const userModel = loadedData.users[user.id];
+    const userModel = loadedData.users && loadedData.users[user.id];
     if (userModel) {
       for (const skill in userModel.skills) {
         const level = userModel.skills[skill].level;
@@ -68,7 +71,7 @@ function MatrixPage() {
   const updateSkillHandler = (level: LevelGridData) => {
     setLoadedData((prev) => {
       const skill = skills[level.skillIndex];
-      const user = prev?.users[users[level.userIndex].id];
+      const user = prev?.users && prev.users[users[level.userIndex].id];
       if (user) {
         if (user.skills) {
           user.skills[skill] = { level: level.level };

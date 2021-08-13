@@ -1,3 +1,10 @@
+import styled from "styled-components";
+
+const Thumbnail = styled.img`
+  max-width: 2rem;
+  max-height: 1rem;
+`;
+
 function User(props: { name: string; index: number }) {
   return (
     <div

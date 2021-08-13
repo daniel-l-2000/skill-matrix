@@ -4,9 +4,7 @@ function MainNavigation() {
   return (
     <nav className="navbar navbar-expand-sm navbar-light bg-light">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">
-          Skill Matrix
-        </a>
+        <span className="navbar-brand">Skill Matrix</span>
         <button
           className="navbar-toggler"
           type="button"
