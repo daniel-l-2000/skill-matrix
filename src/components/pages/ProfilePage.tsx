@@ -4,8 +4,8 @@ import { User } from "../../api/models/user";
 import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
-import { firebaseGet, firebasePut } from "../../api/firebase";
-import { clearSessionData, getUserId } from "../../api/identitytoolkit";
+import { httpGet, httpPut } from "../../api/firebase";
+import { clearSessionData, getUserId } from "../../api/auth";
 import { FaEdit, FaSave, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import {
   firebaseStoragePost,
@@ -36,7 +36,7 @@ function ProfilePage() {
 
   useEffect(() => {
     loadingContext.startLoading();
-    firebaseGet<User>(`/users/${getUserId()}.json`, {
+    httpGet<User>(`/users/${getUserId()}.json`, {
       toastContext,
       history
     }).then((user) => {
@@ -54,7 +54,7 @@ function ProfilePage() {
     ev.preventDefault();
 
     const enteredName = nameInputRef.current?.value;
-    firebasePut(`/users/${getUserId()}/name.json`, {
+    httpPut(`/users/${getUserId()}/name.json`, {
       toastContext,
       history,
       body: enteredName
@@ -84,7 +84,7 @@ function ProfilePage() {
           body: file,
           toastContext
         }).then((res) => {
-          firebasePut(`/users/${getUserId()}/profilePictureToken.json`, {
+          httpPut(`/users/${getUserId()}/profilePictureToken.json`, {
             body: res.downloadTokens,
             toastContext,
             history

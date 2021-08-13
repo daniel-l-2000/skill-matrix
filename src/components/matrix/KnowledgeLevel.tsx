@@ -1,7 +1,7 @@
 import { useContext, useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
-import { firebaseDelete, firebasePut } from "../../api/firebase";
-import { getUserId } from "../../api/identitytoolkit";
+import { httpDelete, httpPut } from "../../api/firebase";
+import { getUserId } from "../../api/auth";
 import Backdrop from "../util/Backdrop";
 import ToastContext from "../../store/toast-context";
 import { useHistory } from "react-router-dom";
@@ -45,7 +45,7 @@ function KnowledgeLevel(props: {
   const selectLevelHandler = () => {
     const selectedLevel = levelSelectRef.current?.value;
     if (selectedLevel === "0") {
-      firebaseDelete(`/users/${props.userId}/skills/${props.skill}.json`, {
+      httpDelete(`/users/${props.userId}/skills/${props.skill}.json`, {
         toastContext,
         history
       }).then(() => {
@@ -54,7 +54,7 @@ function KnowledgeLevel(props: {
         props.onUpdateSkill(+selectedLevel, props.skillIndex, props.userIndex);
       });
     } else if (selectedLevel) {
-      firebasePut(`/users/${props.userId}/skills/${props.skill}.json`, {
+      httpPut(`/users/${props.userId}/skills/${props.skill}.json`, {
         toastContext,
         history,
         body: { level: +selectedLevel }

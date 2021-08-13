@@ -3,11 +3,8 @@ import { useHistory } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
-import {
-  getAuthToken,
-  identitytoolkitPost,
-  setAuthToken
-} from "../../api/identitytoolkit";
+import { getAuthToken, setAuthToken } from "../../api/auth";
+import { httpPost } from "../../api/firebase";
 import { FaSignInAlt } from "react-icons/fa";
 
 function SignInPage() {
@@ -33,8 +30,9 @@ function SignInPage() {
     ev.preventDefault();
 
     loadingContext.startLoading();
-    identitytoolkitPost(":signInWithPassword", {
+    httpPost<any>(":signInWithPassword", {
       toastContext,
+      history,
       body: {
         email: emailInputRef.current?.value,
         password: passwordInputRef.current?.value,
