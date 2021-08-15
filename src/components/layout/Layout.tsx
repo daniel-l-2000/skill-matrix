@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import ReactDOM from "react-dom";
 import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
 import LoadingSpinner from "../util/LoadingSpinner";
@@ -10,12 +11,19 @@ function Layout(props: { children: any }) {
   const authContext = useContext(AuthContext);
 
   return (
-    <div>
+    <>
       {authContext.isSignedIn && <MainNavigation />}
       <main className="p-2">{props.children}</main>
-      {loadingContext.isLoading && <LoadingSpinner />}
-      <ToastContainer />
-    </div>
+      {loadingContext.isLoading &&
+        ReactDOM.createPortal(
+          <LoadingSpinner />,
+          document.getElementById("lds-root") as Element
+        )}
+      {ReactDOM.createPortal(
+        <ToastContainer />,
+        document.getElementById("toasts-root") as Element
+      )}
+    </>
   );
 }
 
