@@ -8,12 +8,7 @@ import { httpGet, httpPut } from "../../api/http";
 import { clearSessionData, getUserId } from "../../api/auth";
 import { FaEdit, FaSave, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { httpPost, STORAGE_BASE_URL } from "../../api/http";
-import styled from "styled-components";
-
-const Thumbnail = styled.img`
-  max-width: 100px;
-  max-height: 100px;
-`;
+import { Thumbnail } from "../util/Thumbnail";
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -104,6 +99,7 @@ function ProfilePage() {
             <Thumbnail
               src={profilePictureUrl}
               alt="No pic"
+              maxSize="8rem"
               className="border rounded p-1 me-2"
             />
           ) : (

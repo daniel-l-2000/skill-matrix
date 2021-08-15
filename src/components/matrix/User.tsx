@@ -1,10 +1,5 @@
-import styled from "styled-components";
 import { STORAGE_BASE_URL } from "../../api/http";
-
-const Thumbnail = styled.img`
-  max-width: 2rem;
-  max-height: 1.5rem;
-`;
+import { Thumbnail } from "../util/Thumbnail";
 
 function User(props: {
   index: number;
@@ -27,6 +22,7 @@ function User(props: {
         <Thumbnail
           src={`${profilePictureUrl1}${props.profilePictureToken}`}
           className="ms-1"
+          maxSize="1.5rem"
         />
       )}
     </div>
