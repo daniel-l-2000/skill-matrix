@@ -1,6 +1,6 @@
 import { useContext, useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
-import { httpDelete, httpPut } from "../../api/firebase";
+import { httpDelete, httpPut } from "../../api/http";
 import { getUserId } from "../../api/auth";
 import Backdrop from "../util/Backdrop";
 import ToastContext from "../../store/toast-context";

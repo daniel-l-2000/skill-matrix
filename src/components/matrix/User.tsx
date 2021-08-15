@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { STORAGE_BASE_URL } from "../../api/firebase-storage";
+import { STORAGE_BASE_URL } from "../../api/http";
 
 const Thumbnail = styled.img`
   max-width: 2rem;

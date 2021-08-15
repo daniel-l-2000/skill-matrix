@@ -4,7 +4,7 @@ import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
 import { getAuthToken, setAuthToken } from "../../api/auth";
-import { httpPost } from "../../api/firebase";
+import { httpPost } from "../../api/http";
 import { FaSignInAlt } from "react-icons/fa";
 
 function SignInPage() {

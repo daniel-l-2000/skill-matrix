@@ -3,7 +3,7 @@ import User from "../matrix/User";
 import classes from "./MatrixPage.module.css";
 import Skill from "../matrix/Skill";
 import { useContext, useEffect, useState } from "react";
-import { httpGet } from "../../api/firebase";
+import { httpGet } from "../../api/http";
 import { Data } from "../../api/models/data";
 import LoadingContext from "../../store/loading-context";
 import { useHistory } from "react-router-dom";

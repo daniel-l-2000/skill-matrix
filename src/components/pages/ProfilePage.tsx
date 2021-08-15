@@ -4,13 +4,10 @@ import { User } from "../../api/models/user";
 import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
-import { httpGet, httpPut } from "../../api/firebase";
+import { httpGet, httpPut } from "../../api/http";
 import { clearSessionData, getUserId } from "../../api/auth";
 import { FaEdit, FaSave, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
-import {
-  firebaseStoragePost,
-  STORAGE_BASE_URL
-} from "../../api/firebase-storage";
+import { httpPost, STORAGE_BASE_URL } from "../../api/http";
 import styled from "styled-components";
 
 const Thumbnail = styled.img`
@@ -80,9 +77,10 @@ function ProfilePage() {
         toastContext.showToast("File must be less than 2 MB", "warning");
       } else {
         loadingContext.startLoading();
-        firebaseStoragePost(`users/${getUserId()}/profilePicture`, {
+        httpPost<any>(`users/${getUserId()}/profilePicture`, {
           body: file,
-          toastContext
+          toastContext,
+          history
         }).then((res) => {
           httpPut(`/users/${getUserId()}/profilePictureToken.json`, {
             body: res.downloadTokens,
