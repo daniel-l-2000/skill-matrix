@@ -93,7 +93,7 @@ function KnowledgeLevel(props: {
       {props.userId === getUserId() && (
         <button
           className={`btn btn-outline-dark btn-sm shadow-none border-0 ms-1 ${
-            inEditMode ? "position-relative before-backdrop" : ""
+            inEditMode && "position-relative before-backdrop"
           }`}
           onClick={toggleEditModeHandler}
         >
