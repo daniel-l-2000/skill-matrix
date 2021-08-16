@@ -1,4 +1,4 @@
-import { useContext, useRef, useState } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
 import { httpDelete, httpPut } from "../../api/http";
 import { getUserId } from "../../api/auth";
@@ -38,11 +38,11 @@ function KnowledgeLevel(props: {
       break;
   }
 
-  const toggleEditModeHandler = () => {
+  const toggleEditModeHandler = useCallback(() => {
     setInEditMode((prev) => !prev);
-  };
+  }, []);
 
-  const selectLevelHandler = () => {
+  const selectLevelHandler = useCallback(() => {
     const selectedLevel = levelSelectRef.current?.value;
     if (selectedLevel === "0") {
       httpDelete(`/users/${props.userId}/skills/${props.skill}.json`, {
@@ -64,11 +64,11 @@ function KnowledgeLevel(props: {
         props.onUpdateSkill(+selectedLevel, props.skillIndex, props.userIndex);
       });
     }
-  };
+  }, [toastContext, history, props]);
 
   return (
     <div
-      className="border-start border-top ps-1"
+      className="border-start border-top d-flex justify-content-center align-items-center"
       style={{
         gridColumn: props.skillIndex + 2,
         gridRow: props.userIndex + 2

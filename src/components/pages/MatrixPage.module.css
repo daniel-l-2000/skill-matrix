@@ -1,4 +1,5 @@
 .matrixGrid {
   display: grid;
   grid-auto-columns: max-content;
+  grid-auto-rows: 2rem;
 }
