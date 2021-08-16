@@ -6,7 +6,7 @@ function ToastContainer() {
   const toastContext = useContext(ToastContext);
 
   return (
-    <div className="toast-container position-fixed start-0 bottom-0 p-3">
+    <div className="toast-container position-fixed before-backdrop start-0 bottom-0 p-3">
       {toastContext.toasts.map((t) => (
         <Toast
           key={+t.time}

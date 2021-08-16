@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useContext, useEffect, useRef } from "react";
+import { ChangeEvent, FormEvent, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
@@ -109,6 +109,7 @@ function SignInPage() {
               passwordIsValid === false && "is-invalid"
             }`}
             required
+            minLength={6}
             onChange={passwordChangeHandler}
             onBlur={validatePasswordHandler}
           />

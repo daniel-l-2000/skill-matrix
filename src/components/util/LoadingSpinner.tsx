@@ -5,7 +5,7 @@ function LoadingSpinner() {
   return (
     <>
       <Backdrop />
-      <div className={classes.ldsRipple}>
+      <div className={`before-backdrop ${classes.ldsRipple}`}>
         <div></div>
         <div></div>
       </div>
