@@ -1,4 +1,4 @@
-import { FormEvent, useContext, useEffect, useRef } from "react";
+import { ChangeEvent, FormEvent, useContext, useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
@@ -6,10 +6,14 @@ import ToastContext from "../../store/toast-context";
 import { getAuthToken, setAuthToken } from "../../api/auth";
 import { httpPost } from "../../api/http";
 import { FaSignInAlt } from "react-icons/fa";
+import { useState } from "react";
 
 function SignInPage() {
-  const emailInputRef = useRef<HTMLInputElement>(null);
-  const passwordInputRef = useRef<HTMLInputElement>(null);
+  const [enteredEmail, setEnteredEmail] = useState("");
+  const [emailIsValid, setEmailIsValid] = useState<boolean>();
+  const [enteredPassword, setEnteredPassword] = useState("");
+  const [passwordIsValid, setPasswordIsValid] = useState<boolean>();
+  const [formIsValid, setFormIsValid] = useState(false);
 
   const loadingContext = useContext(LoadingContext);
   const authContext = useContext(AuthContext);
@@ -24,7 +28,43 @@ function SignInPage() {
       authContext.signIn();
       history.replace("/matrix");
     }
-  }, [authContext, history]);
+  }, []);
+
+  // useEffect(() => {
+  //   const identifier = setTimeout(() => {
+  //     setFormIsValid(
+  //       enteredEmail.includes('@') && enteredPassword.trim().length >= 6
+  //     );
+  //   }, 500);
+
+  //   return () => {
+  //     clearTimeout(identifier);
+  //   };
+  // }, [enteredEmail, enteredPassword]);
+
+  const emailChangeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
+    setEnteredEmail(ev.target.value);
+
+    setFormIsValid(
+      ev.target.value.includes("@") && enteredPassword.trim().length >= 6
+    );
+  };
+
+  const passwordChangeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
+    setEnteredPassword(ev.target.value);
+
+    setFormIsValid(
+      enteredEmail.includes("@") && ev.target.value.trim().length >= 6
+    );
+  };
+
+  const validateEmailHandler = () => {
+    setEmailIsValid(enteredEmail.includes("@"));
+  };
+
+  const validatePasswordHandler = () => {
+    setPasswordIsValid(enteredPassword.trim().length >= 6);
+  };
 
   const submitHandler = (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
@@ -34,8 +74,8 @@ function SignInPage() {
       toastContext,
       history,
       body: {
-        email: emailInputRef.current?.value,
-        password: passwordInputRef.current?.value,
+        email: enteredEmail,
+        password: enteredPassword,
         returnSecureToken: true
       }
     }).then((res) => {
@@ -54,9 +94,10 @@ function SignInPage() {
           <input
             type="email"
             id="email"
-            className="form-control"
+            className={`form-control ${emailIsValid === false && "is-invalid"}`}
             required
-            ref={emailInputRef}
+            onChange={emailChangeHandler}
+            onBlur={validateEmailHandler}
           />
         </div>
         <div className="mb-3">
@@ -64,13 +105,20 @@ function SignInPage() {
           <input
             type="password"
             id="password"
-            className="form-control"
+            className={`form-control ${
+              passwordIsValid === false && "is-invalid"
+            }`}
             required
-            ref={passwordInputRef}
+            onChange={passwordChangeHandler}
+            onBlur={validatePasswordHandler}
           />
         </div>
         <div className="d-flex flex-row-reverse">
-          <button type="submit" className="btn btn-primary">
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={!formIsValid}
+          >
             <FaSignInAlt className="me-1" />
             Sign in
           </button>
