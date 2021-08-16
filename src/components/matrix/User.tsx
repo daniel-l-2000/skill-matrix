@@ -1,5 +1,5 @@
 import { STORAGE_BASE_URL } from "../../api/http";
-import { Thumbnail } from "../util/Thumbnail";
+import Thumbnail from "../util/Thumbnail";
 
 function User(props: {
   index: number;

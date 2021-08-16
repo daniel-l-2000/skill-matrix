@@ -1,4 +1,10 @@
-import { ChangeEvent, FormEvent, useContext, useEffect } from "react";
+import {
+  ChangeEvent,
+  FormEvent,
+  useContext,
+  useEffect,
+  useReducer
+} from "react";
 import { useHistory } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
@@ -8,12 +14,60 @@ import { httpPost } from "../../api/http";
 import { FaSignInAlt } from "react-icons/fa";
 import { useState } from "react";
 
+interface ReducerAction {
+  type: "USER_INPUT" | "INPUT_BLUR";
+  val?: string;
+}
+
+interface ReducerState {
+  value?: string;
+  isValid?: boolean;
+}
+
+function emailReducer(
+  state: ReducerState,
+  action: ReducerAction
+): ReducerState {
+  if (action.type === "USER_INPUT") {
+    return { value: action.val, isValid: action.val?.includes("@") };
+  }
+  if (action.type === "INPUT_BLUR") {
+    return { value: state.value, isValid: state.value?.includes("@") };
+  }
+  return { value: "", isValid: undefined };
+}
+
+function passwordReducer(
+  state: ReducerState,
+  action: ReducerAction
+): ReducerState {
+  switch (action.type) {
+    case "USER_INPUT":
+      return {
+        value: action.val,
+        isValid: !!action.val && action.val.trim().length >= 6
+      };
+    case "INPUT_BLUR":
+      return {
+        value: state.value,
+        isValid: !!state.value && state.value.trim().length >= 6
+      };
+    default:
+      return { value: "", isValid: undefined };
+  }
+}
+
 function SignInPage() {
-  const [enteredEmail, setEnteredEmail] = useState("");
-  const [emailIsValid, setEmailIsValid] = useState<boolean>();
-  const [enteredPassword, setEnteredPassword] = useState("");
-  const [passwordIsValid, setPasswordIsValid] = useState<boolean>();
-  const [formIsValid, setFormIsValid] = useState(false);
+  const [formIsValid, setFormIsValid] = useState<boolean>();
+
+  const [emailState, dispatchEmail] = useReducer(emailReducer, {
+    value: "",
+    isValid: undefined
+  });
+  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
+    value: "",
+    isValid: undefined
+  });
 
   const loadingContext = useContext(LoadingContext);
   const authContext = useContext(AuthContext);
@@ -30,40 +84,30 @@ function SignInPage() {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const identifier = setTimeout(() => {
-  //     setFormIsValid(
-  //       enteredEmail.includes('@') && enteredPassword.trim().length >= 6
-  //     );
-  //   }, 500);
+  useEffect(() => {
+    const identifier = setTimeout(() => {
+      setFormIsValid(emailState.isValid && passwordState.isValid);
+    }, 500);
 
-  //   return () => {
-  //     clearTimeout(identifier);
-  //   };
-  // }, [enteredEmail, enteredPassword]);
+    return () => {
+      clearTimeout(identifier);
+    };
+  }, [emailState.isValid, passwordState.isValid]);
 
   const emailChangeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
-    setEnteredEmail(ev.target.value);
-
-    setFormIsValid(
-      ev.target.value.includes("@") && enteredPassword.trim().length >= 6
-    );
+    dispatchEmail({ type: "USER_INPUT", val: ev.target.value });
   };
 
   const passwordChangeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
-    setEnteredPassword(ev.target.value);
-
-    setFormIsValid(
-      enteredEmail.includes("@") && ev.target.value.trim().length >= 6
-    );
+    dispatchPassword({ type: "USER_INPUT", val: ev.target.value });
   };
 
   const validateEmailHandler = () => {
-    setEmailIsValid(enteredEmail.includes("@"));
+    dispatchEmail({ type: "INPUT_BLUR" });
   };
 
   const validatePasswordHandler = () => {
-    setPasswordIsValid(enteredPassword.trim().length >= 6);
+    dispatchPassword({ type: "INPUT_BLUR" });
   };
 
   const submitHandler = (ev: FormEvent<HTMLFormElement>) => {
@@ -74,8 +118,8 @@ function SignInPage() {
       toastContext,
       history,
       body: {
-        email: enteredEmail,
-        password: enteredPassword,
+        email: emailState.value,
+        password: passwordState.value,
         returnSecureToken: true
       }
     }).then((res) => {
@@ -94,7 +138,9 @@ function SignInPage() {
           <input
             type="email"
             id="email"
-            className={`form-control ${emailIsValid === false && "is-invalid"}`}
+            className={`form-control ${
+              emailState.isValid === false && "is-invalid"
+            }`}
             required
             onChange={emailChangeHandler}
             onBlur={validateEmailHandler}
@@ -106,7 +152,7 @@ function SignInPage() {
             type="password"
             id="password"
             className={`form-control ${
-              passwordIsValid === false && "is-invalid"
+              passwordState.isValid === false && "is-invalid"
             }`}
             required
             minLength={6}

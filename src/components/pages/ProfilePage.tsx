@@ -8,7 +8,7 @@ import { httpGet, httpPut } from "../../api/http";
 import { clearSessionData, getUserId } from "../../api/auth";
 import { FaEdit, FaSave, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { httpPost, STORAGE_BASE_URL } from "../../api/http";
-import { Thumbnail } from "../util/Thumbnail";
+import Thumbnail from "../util/Thumbnail";
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
