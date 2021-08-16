@@ -5,3 +5,7 @@
 .max-card-width {
   max-width: 24rem;
 }
+
+.fade {
+  transition: all 0.15s linear;
+}
