@@ -1,10 +1,11 @@
 .ldsRipple {
   display: inline-block;
-  position: relative;
+  position: fixed;
   width: 80px;
   height: 80px;
   left: calc(50% - 40px);
   top: calc(50% - 40px);
+  z-index: 1050;
 }
 .ldsRipple div {
   position: absolute;
