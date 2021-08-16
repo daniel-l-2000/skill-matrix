@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   FaBeer,
   FaInfoCircle,
@@ -8,6 +9,18 @@ import {
 import { ToastData } from "../../store/toast-context-model";
 
 function Toast(props: ToastData) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShow(true);
+    }, 1);
+
+    setTimeout(() => {
+      setShow(false);
+    }, 3000 - 150);
+  }, []);
+
   let icon = <FaBeer />;
   switch (props.icon) {
     case "info":
@@ -25,7 +38,7 @@ function Toast(props: ToastData) {
   }
 
   return (
-    <div className="toast show" role="alert">
+    <div className={`toast fade ${show && "show"}`} role="alert">
       <div className="toast-header">
         <small className={`me-1 text-${props.icon}`}>{icon}</small>
         <strong className="me-auto">{props.title}</strong>
