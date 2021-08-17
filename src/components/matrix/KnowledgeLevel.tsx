@@ -1,4 +1,4 @@
-import { useCallback, useContext, useRef, useState } from "react";
+import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
 import { httpDelete, httpPut } from "../../api/http";
 import { getUserId } from "../../api/auth";
@@ -23,21 +23,19 @@ function KnowledgeLevel(props: {
 
   const history = useHistory();
 
-  let icon = props.level.toString();
-  switch (props.level) {
-    case 0:
-      icon = "";
-      break;
-    case 1:
-      icon = "+";
-      break;
-    case 2:
-      icon = "++";
-      break;
-    case 3:
-      icon = "+++";
-      break;
-  }
+  let icon = useMemo(()=>{
+     props.level.toString();
+    switch (props.level) {
+      case 0:
+        return "";
+      case 1:
+        return "+";
+      case 2:
+        return "++";
+      case 3:
+        return "+++";
+    }
+  }, [props.level])
 
   const toggleEditModeHandler = useCallback(() => {
     setInEditMode((prev) => !prev);
