@@ -5,6 +5,7 @@ import { getUserId } from "../../api/auth";
 import Backdrop from "../util/Backdrop";
 import ToastContext from "../../store/toast-context";
 import { useHistory } from "react-router-dom";
+import KnowledgeLevelSelector from "./KnowledgeLevelSelector";
 
 function KnowledgeLevel(props: {
   level: number;
@@ -75,17 +76,11 @@ function KnowledgeLevel(props: {
       }}
     >
       {inEditMode ? (
-        <select
-          className="form-select form-select-sm d-inline w-auto position-relative before-backdrop"
+        <KnowledgeLevelSelector
           onChange={selectLevelHandler}
-          value={props.level}
+          initialValue={props.level}
           ref={levelSelectRef}
-        >
-          <option value={1}>+</option>
-          <option value={2}>++</option>
-          <option value={3}>+++</option>
-          <option value={0}>{icon ? "Remove" : "Select"}</option>
-        </select>
+        />
       ) : (
         icon
       )}
