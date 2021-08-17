@@ -14,7 +14,7 @@ type RequestType = "database" | "identitytoolkit" | "storage";
 
 export class RequestOptions {
   body?: any;
-  handleErrorInComponent? = false;
+  skipErrorHandling? = false;
   toastContext!: ToastContextModel;
   history!: History;
 }
@@ -88,44 +88,36 @@ function getHeaders(
   }
 }
 
-export function httpRequest<T>(
-  url: string,
-  method: string,
-  body?: any,
-  headers?: Record<string, string>
-) {
-  return fetch(url, {
-    method,
-    body: body instanceof File ? body : JSON.stringify(body),
-    headers
-  })
-    .then(async (res) => {
-      const json = await res.json();
-
-      if (res.ok) {
-        return json;
-      }
-
-      return new Promise((_, reject) => reject(json));
-    })
-    .then((res) => res as T | undefined);
-}
-
-function firebaseHttp<T>(
+function httpRequest<T>(
   resource: string,
   method: string,
   options: RequestOptions
 ) {
   const token = getAuthToken();
   const requestType = getRequestType(resource);
-  let promise = httpRequest<T>(
-    getUrl(requestType, resource),
-    method,
-    options.body,
-    getHeaders(requestType, options.body)
-  );
+  const url = getUrl(requestType, resource);
+  const headers = getHeaders(requestType, options.body);
 
-  if (!options.handleErrorInComponent) {
+  let promise = fetch(url, {
+    method,
+    body:
+      options.body instanceof File
+        ? options.body
+        : JSON.stringify(options.body),
+    headers
+  })
+    .then(async (res) => {
+      const json = await res.json();
+
+      if (!res.ok) {
+        return new Promise((_, reject) => reject(json));
+      }
+
+      return json;
+    })
+    .then((res) => res as T | undefined);
+
+  if (!options.skipErrorHandling) {
     promise = promise.catch((reason) => {
       const error = getErrorText(requestType, reason);
       options.toastContext.showToast("Error", "danger", error);
@@ -143,17 +135,17 @@ function firebaseHttp<T>(
 }
 
 export function httpGet<T>(resource: string, options: RequestOptions) {
-  return firebaseHttp<T>(resource, "GET", options);
+  return httpRequest<T>(resource, "GET", options);
 }
 
 export function httpPost<T>(resource: string, options: RequestOptions) {
-  return firebaseHttp<T>(resource, "POST", options);
+  return httpRequest<T>(resource, "POST", options);
 }
 
 export function httpPut<T>(resource: string, options: RequestOptions) {
-  return firebaseHttp<T>(resource, "PUT", options);
+  return httpRequest<T>(resource, "PUT", options);
 }
 
 export function httpDelete<T>(resource: string, options: RequestOptions) {
-  return firebaseHttp<T>(resource, "DELETE", options);
+  return httpRequest<T>(resource, "DELETE", options);
 }
