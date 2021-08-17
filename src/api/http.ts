@@ -105,17 +105,15 @@ function httpRequest<T>(
         ? options.body
         : JSON.stringify(options.body),
     headers
-  })
-    .then(async (res) => {
-      const json = await res.json();
+  }).then(async (res) => {
+    const json = await res.json();
 
-      if (!res.ok) {
-        return new Promise((_, reject) => reject(json));
-      }
+    if (!res.ok) {
+      return new Promise<undefined>((_, reject) => reject(json));
+    }
 
-      return json;
-    })
-    .then((res) => res as T | undefined);
+    return json as T | undefined;
+  });
 
   if (!options.skipErrorHandling) {
     promise = promise.catch((reason) => {
