@@ -1,3 +1,3 @@
 export interface Skill {
-  description: string;
+  description?: string;
 }

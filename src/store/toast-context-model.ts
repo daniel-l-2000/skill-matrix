@@ -4,7 +4,7 @@ export interface ToastData {
   title: string;
   icon: IconType;
   description?: string;
-  time: Date;
+  timestamp: Date;
 }
 
 export interface ToastContextModel {
