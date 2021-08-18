@@ -4,7 +4,7 @@ import Backdrop from "../util/Backdrop";
 import ToastContext from "../../store/toast-context";
 import KnowledgeLevelSelector from "./KnowledgeLevelSelector";
 import { getAuth } from "firebase/auth";
-import { getDatabase, ref, remove, update } from "firebase/database";
+import useDatabase from "../../hooks/use-database";
 
 function KnowledgeLevel(props: {
   level: number;
@@ -19,6 +19,15 @@ function KnowledgeLevel(props: {
   const levelSelectRef = useRef<HTMLSelectElement>(null);
 
   const toastContext = useContext(ToastContext);
+
+  const createSkill = useDatabase(
+    `/users/${props.userId}/skills/${props.skill}`,
+    "create"
+  );
+  const deleteSkill = useDatabase(
+    `/users/${props.userId}/skills/${props.skill}`,
+    "delete"
+  );
 
   const icon = useMemo(() => {
     props.level.toString();
@@ -41,29 +50,19 @@ function KnowledgeLevel(props: {
   const selectLevelHandler = useCallback(() => {
     const selectedLevel = levelSelectRef.current?.value;
     if (selectedLevel === "0") {
-      const db = getDatabase();
-      remove(ref(db, `/users/${props.userId}/skills/${props.skill}`)).then(
-        () => {
-          toastContext.showToast("Skill removed", "info");
-          setInEditMode(false);
-          props.onUpdateSkill(
-            +selectedLevel,
-            props.skillIndex,
-            props.userIndex
-          );
-        }
-      );
+      deleteSkill().then(() => {
+        toastContext.showToast("Skill removed", "info");
+        setInEditMode(false);
+        props.onUpdateSkill(+selectedLevel, props.skillIndex, props.userIndex);
+      });
     } else if (selectedLevel) {
-      const db = getDatabase();
-      update(ref(db, `/users/${props.userId}/skills/${props.skill}`), {
-        level: +selectedLevel
-      }).then(() => {
+      createSkill({ level: +selectedLevel }).then(() => {
         toastContext.showToast("Skill updated", "info");
         setInEditMode(false);
         props.onUpdateSkill(+selectedLevel, props.skillIndex, props.userIndex);
       });
     }
-  }, [toastContext, props]);
+  }, [toastContext, props, createSkill, deleteSkill]);
 
   return (
     <div

@@ -2,26 +2,22 @@ import KnowledgeLevel from "../matrix/KnowledgeLevel";
 import User from "../matrix/User";
 import classes from "./MatrixPage.module.css";
 import Skill from "../matrix/Skill";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Data } from "../../models/data";
-import LoadingContext from "../../store/loading-context";
-import { getDatabase, ref, get } from "firebase/database";
+import useDatabase from "../../hooks/use-database";
 
 function MatrixPage() {
   const [loadedData, setLoadedData] = useState<Data>();
 
-  const loadingContext = useContext(LoadingContext);
+  const readData = useDatabase<Data>("/", "read");
 
   useEffect(() => {
-    loadingContext.startLoading();
-    const dbRef = ref(getDatabase());
-    get(dbRef).then((snapshot) => {
-      if (snapshot.exists()) {
-        loadingContext.stopLoading();
-        setLoadedData(snapshot.val());
+    readData().then((data) => {
+      if (data) {
+        setLoadedData(data);
       }
     });
-  }, []);
+  }, [readData]);
 
   if (!loadedData) {
     return <div></div>;

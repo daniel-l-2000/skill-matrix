@@ -1,11 +1,10 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import { FaEdit, FaUserCircle } from "react-icons/fa";
-import { useHistory } from "react-router-dom";
 import Thumbnail from "../util/Thumbnail";
 import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import { getAuth, UserInfo } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 
 function ProfilePicture() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -15,8 +14,8 @@ function ProfilePicture() {
 
   const [profilePictureUrl, setProfilePictureUrl] = useState<string>();
 
-  const { uid } = getAuth().currentUser as UserInfo;
-  const profilePicturePath = `/users/${uid}/profilePicture`;
+  const user = getAuth().currentUser;
+  const profilePicturePath = `/users/${user?.uid}/profilePicture`;
 
   useEffect(() => {
     const storage = getStorage();
@@ -40,13 +39,15 @@ function ProfilePicture() {
         toastContext.showToast("File has to be of type PNG or JPEG", "warning");
       } else {
         loadingContext.startLoading();
+
         const storage = getStorage();
         uploadBytes(ref(storage, profilePicturePath), file).then(() => {
           setProfilePictureUrl(undefined);
+
           getDownloadURL(ref(storage, profilePictureUrl)).then((url) => {
             loadingContext.stopLoading();
-            setProfilePictureUrl(url);
             toastContext.showToast("Profile picture changed", "success");
+            setProfilePictureUrl(url);
           });
         });
       }

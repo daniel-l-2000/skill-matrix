@@ -1,47 +1,45 @@
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
-import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
 import { FaSave, FaSignOutAlt } from "react-icons/fa";
 import ProfilePicture from "../profile/ProfilePicture";
-import { get, getDatabase, ref, set } from "firebase/database";
 import { getAuth } from "firebase/auth";
+import useDatabase from "../../hooks/use-database";
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState<string>();
 
-  const loadingContext = useContext(LoadingContext);
   const toastContext = useContext(ToastContext);
 
+  const user = getAuth().currentUser;
+  const readName = useDatabase<string>(`/users/${user?.uid}/name`, "read");
+  const updateName = useDatabase(`/users/${user?.uid}`, "update");
+
   useEffect(() => {
-    loadingContext.startLoading();
-    const db = getDatabase();
-    get(ref(db, `/users/${getAuth().currentUser?.uid}/name`)).then(
-      (snapshot) => {
-        loadingContext.stopLoading();
-        if (snapshot.exists()) {
-          setName(snapshot.val());
-        }
+    readName().then((result) => {
+      if (result) {
+        setName(result);
       }
-    );
-  }, []);
+    });
+  }, [readName]);
 
   const submitHandler = (ev: FormEvent) => {
     ev.preventDefault();
 
     const enteredName = nameInputRef.current?.value;
-    const db = getDatabase();
-    set(ref(db, `/users/${getAuth().currentUser?.uid}/name`), enteredName).then(
-      () => {
-        toastContext.showToast("Changes saved", "success");
-      }
-    );
+    updateName({ name: enteredName }).then(() => {
+      toastContext.showToast("Changes saved", "success");
+    });
   };
 
   const signOutHandler = () => {
     getAuth().signOut();
   };
+
+  if (!name) {
+    return <div></div>;
+  }
 
   return (
     <div className="d-flex justify-content-center">
