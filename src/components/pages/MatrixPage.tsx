@@ -3,25 +3,23 @@ import User from "../matrix/User";
 import classes from "./MatrixPage.module.css";
 import Skill from "../matrix/Skill";
 import { useContext, useEffect, useState } from "react";
-import { httpGet } from "../../api/http";
-import { Data } from "../../api/models/data";
+import { Data } from "../../models/data";
 import LoadingContext from "../../store/loading-context";
-import { useHistory } from "react-router-dom";
-import ToastContext from "../../store/toast-context";
+import { getDatabase, ref, get } from "firebase/database";
 
 function MatrixPage() {
   const [loadedData, setLoadedData] = useState<Data>();
 
   const loadingContext = useContext(LoadingContext);
-  const toastContext = useContext(ToastContext);
-
-  const history = useHistory();
 
   useEffect(() => {
     loadingContext.startLoading();
-    httpGet<Data>("/.json", { toastContext, history }).then((data) => {
-      loadingContext.stopLoading();
-      setLoadedData(data);
+    const dbRef = ref(getDatabase());
+    get(dbRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        loadingContext.stopLoading();
+        setLoadedData(snapshot.val());
+      }
     });
   }, []);
 
@@ -66,15 +64,7 @@ function MatrixPage() {
       {userIds.map((id, i) => {
         const user = loadedData.users && loadedData.users[id];
         if (user?.name) {
-          return (
-            <User
-              index={i}
-              id={id}
-              name={user.name}
-              profilePictureToken={user.profilePictureToken}
-              key={id}
-            ></User>
-          );
+          return <User index={i} id={id} name={user.name} key={id}></User>;
         }
         return null;
       })}

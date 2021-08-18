@@ -1,19 +1,40 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
 import LoadingSpinner from "../util/LoadingSpinner";
 import ToastContainer from "../util/ToastContainer";
 import MainNavigation from "./MainNavigation";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useHistory } from "react-router-dom";
 
 function Layout(props: { children: any }) {
   const loadingContext = useContext(LoadingContext);
-  const authContext = useContext(AuthContext);
+
+  const history = useHistory();
+
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  useEffect(() => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsSignedIn(true);
+        if (history.location.pathname === "/") {
+          history.replace("/matrix");
+        }
+      } else {
+        history.replace("/");
+        setIsSignedIn(false);
+      }
+    });
+  }, [history]);
 
   return (
     <>
-      {authContext.isSignedIn && <MainNavigation />}
-      <main className="p-2">{props.children}</main>
+      {isSignedIn && <MainNavigation />}
+      {(isSignedIn || history.location.pathname === "/") && (
+        <main className="p-2">{props.children}</main>
+      )}
       {loadingContext.isLoading &&
         ReactDOM.createPortal(
           <LoadingSpinner />,

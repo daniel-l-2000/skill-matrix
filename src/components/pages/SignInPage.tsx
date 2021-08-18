@@ -5,14 +5,11 @@ import {
   useEffect,
   useReducer
 } from "react";
-import { useHistory } from "react-router-dom";
-import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
-import { getAuthToken, setAuthToken } from "../../api/auth";
-import { httpPost } from "../../api/http";
 import { FaSignInAlt } from "react-icons/fa";
 import { useState } from "react";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 interface ReducerAction {
   type: "USER_INPUT" | "INPUT_BLUR";
@@ -20,7 +17,7 @@ interface ReducerAction {
 }
 
 interface ReducerState {
-  value?: string;
+  value: string;
   isValid?: boolean;
 }
 
@@ -29,7 +26,7 @@ function emailReducer(
   action: ReducerAction
 ): ReducerState {
   if (action.type === "USER_INPUT") {
-    return { value: action.val, isValid: action.val?.includes("@") };
+    return { value: action.val ?? "", isValid: action.val?.includes("@") };
   }
   if (action.type === "INPUT_BLUR") {
     return { value: state.value, isValid: state.value?.includes("@") };
@@ -44,7 +41,7 @@ function passwordReducer(
   switch (action.type) {
     case "USER_INPUT":
       return {
-        value: action.val,
+        value: action.val ?? "",
         isValid: !!action.val && action.val.trim().length >= 6
       };
     case "INPUT_BLUR":
@@ -70,19 +67,7 @@ function SignInPage() {
   });
 
   const loadingContext = useContext(LoadingContext);
-  const authContext = useContext(AuthContext);
   const toastContext = useContext(ToastContext);
-
-  const history = useHistory();
-
-  useEffect(() => {
-    authContext.signOut();
-    const token = getAuthToken();
-    if (token) {
-      authContext.signIn();
-      history.replace("/matrix");
-    }
-  }, []);
 
   useEffect(() => {
     const identifier = setTimeout(() => {
@@ -114,20 +99,24 @@ function SignInPage() {
     ev.preventDefault();
 
     loadingContext.startLoading();
-    httpPost<any>(":signInWithPassword", {
-      toastContext,
-      history,
-      body: {
-        email: emailState.value,
-        password: passwordState.value,
-        returnSecureToken: true
-      }
-    }).then((res) => {
-      loadingContext.stopLoading();
-      authContext.signIn();
-      setAuthToken(res.idToken);
-      history.replace("/matrix");
-    });
+
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, emailState.value, passwordState.value)
+      .then(() => {
+        loadingContext.stopLoading();
+      })
+      .catch((err) => {
+        loadingContext.stopLoading();
+
+        switch (err.code) {
+          case "auth/wrong-password":
+            toastContext.showToast("Incorrect password", "danger");
+            break;
+          case "auth/user-not-found":
+            toastContext.showToast("Unknown email", "danger");
+            break;
+        }
+      });
   };
 
   return (

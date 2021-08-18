@@ -1,61 +1,52 @@
 import { FormEvent, useContext, useEffect, useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { User } from "../../api/models/user";
-import AuthContext from "../../store/auth-context";
 import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
-import { httpGet, httpPut } from "../../api/http";
-import { clearSessionData, getUserId } from "../../api/auth";
 import { FaSave, FaSignOutAlt } from "react-icons/fa";
 import ProfilePicture from "../profile/ProfilePicture";
+import { get, getDatabase, ref, set } from "firebase/database";
+import { getAuth } from "firebase/auth";
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState<string>();
-  const [profilePictureToken, setProfilePictureToken] = useState<string>();
 
   const loadingContext = useContext(LoadingContext);
   const toastContext = useContext(ToastContext);
-  const authContext = useContext(AuthContext);
-
-  const history = useHistory();
 
   useEffect(() => {
     loadingContext.startLoading();
-    httpGet<User>(`/users/${getUserId()}.json`, {
-      toastContext,
-      history
-    }).then((user) => {
-      loadingContext.stopLoading();
-      setName(user?.name);
-      setProfilePictureToken(user?.profilePictureToken);
-    });
+    const db = getDatabase();
+    get(ref(db, `/users/${getAuth().currentUser?.uid}/name`)).then(
+      (snapshot) => {
+        loadingContext.stopLoading();
+        if (snapshot.exists()) {
+          setName(snapshot.val());
+        }
+      }
+    );
   }, []);
 
   const submitHandler = (ev: FormEvent) => {
     ev.preventDefault();
 
     const enteredName = nameInputRef.current?.value;
-    httpPut(`/users/${getUserId()}/name.json`, {
-      toastContext,
-      history,
-      body: enteredName
-    }).then(() => {
-      toastContext.showToast("Changes saved", "success");
-    });
+    const db = getDatabase();
+    set(ref(db, `/users/${getAuth().currentUser?.uid}/name`), enteredName).then(
+      () => {
+        toastContext.showToast("Changes saved", "success");
+      }
+    );
   };
 
   const signOutHandler = () => {
-    clearSessionData();
-    authContext.signOut();
-    history.replace("/");
+    getAuth().signOut();
   };
 
   return (
     <div className="d-flex justify-content-center">
       <form className="card p-2 w-100 max-card-width" onSubmit={submitHandler}>
-        <ProfilePicture profilePictureToken={profilePictureToken} />
+        <ProfilePicture />
         <div className="mt-2">
           <label htmlFor="name">Name</label>
           <input

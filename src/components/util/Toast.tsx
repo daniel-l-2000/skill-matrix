@@ -42,7 +42,9 @@ function Toast(props: ToastData) {
       <div className="toast-header">
         <small className={`me-1 text-${props.icon}`}>{icon}</small>
         <strong className="me-auto">{props.title}</strong>
-        <small className="text-muted">{props.time.toLocaleTimeString()}</small>
+        <small className="text-muted">
+          {props.timestamp.toLocaleTimeString()}
+        </small>
       </div>
       {props.description && (
         <div className="toast-body">{props.description}</div>

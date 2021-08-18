@@ -1,14 +1,18 @@
-import { STORAGE_BASE_URL } from "../../api/http";
+import { getStorage, getDownloadURL, ref } from "firebase/storage";
+import { useEffect, useState } from "react";
 import Thumbnail from "../util/Thumbnail";
 
-function User(props: {
-  index: number;
-  id: string;
-  name: string;
-  profilePictureToken?: string;
-}) {
-  const filePath = encodeURIComponent(`users/${props.id}/profilePicture`);
-  const profilePictureUrl1 = `${STORAGE_BASE_URL}${filePath}?alt=media&token=`;
+function User(props: { index: number; id: string; name: string }) {
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string>();
+
+  useEffect(() => {
+    const storage = getStorage();
+    getDownloadURL(ref(storage, `/users/${props.id}/profilePicture`))
+      .then((url) => {
+        setProfilePictureUrl(url);
+      })
+      .catch(() => {});
+  }, [props.id]);
 
   return (
     <div
@@ -18,12 +22,8 @@ function User(props: {
       }}
     >
       {props.name}
-      {props.profilePictureToken && (
-        <Thumbnail
-          src={`${profilePictureUrl1}${props.profilePictureToken}`}
-          className="ms-1"
-          maxSize="1.5rem"
-        />
+      {profilePictureUrl && (
+        <Thumbnail src={profilePictureUrl} className="ms-1" maxSize="1.5rem" />
       )}
     </div>
   );

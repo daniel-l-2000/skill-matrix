@@ -9,11 +9,11 @@ function ToastContainer() {
     <div className="toast-container position-fixed before-backdrop start-0 bottom-0 p-3">
       {toastContext.toasts.map((t) => (
         <Toast
-          key={+t.time}
+          key={+t.timestamp}
           title={t.title}
           icon={t.icon}
           description={t.description}
-          time={t.time}
+          timestamp={t.timestamp}
         />
       ))}
     </div>

@@ -1,11 +1,10 @@
 import { useCallback, useContext, useMemo, useRef, useState } from "react";
 import { FaEdit, FaTimesCircle } from "react-icons/fa";
-import { httpDelete, httpPut } from "../../api/http";
-import { getUserId } from "../../api/auth";
 import Backdrop from "../util/Backdrop";
 import ToastContext from "../../store/toast-context";
-import { useHistory } from "react-router-dom";
 import KnowledgeLevelSelector from "./KnowledgeLevelSelector";
+import { getAuth } from "firebase/auth";
+import { getDatabase, ref, remove, update } from "firebase/database";
 
 function KnowledgeLevel(props: {
   level: number;
@@ -21,10 +20,8 @@ function KnowledgeLevel(props: {
 
   const toastContext = useContext(ToastContext);
 
-  const history = useHistory();
-
-  let icon = useMemo(()=>{
-     props.level.toString();
+  const icon = useMemo(() => {
+    props.level.toString();
     switch (props.level) {
       case 0:
         return "";
@@ -35,7 +32,7 @@ function KnowledgeLevel(props: {
       case 3:
         return "+++";
     }
-  }, [props.level])
+  }, [props.level]);
 
   const toggleEditModeHandler = useCallback(() => {
     setInEditMode((prev) => !prev);
@@ -44,26 +41,29 @@ function KnowledgeLevel(props: {
   const selectLevelHandler = useCallback(() => {
     const selectedLevel = levelSelectRef.current?.value;
     if (selectedLevel === "0") {
-      httpDelete(`/users/${props.userId}/skills/${props.skill}.json`, {
-        toastContext,
-        history
-      }).then(() => {
-        toastContext.showToast("Skill removed", "info");
-        setInEditMode(false);
-        props.onUpdateSkill(+selectedLevel, props.skillIndex, props.userIndex);
-      });
+      const db = getDatabase();
+      remove(ref(db, `/users/${props.userId}/skills/${props.skill}`)).then(
+        () => {
+          toastContext.showToast("Skill removed", "info");
+          setInEditMode(false);
+          props.onUpdateSkill(
+            +selectedLevel,
+            props.skillIndex,
+            props.userIndex
+          );
+        }
+      );
     } else if (selectedLevel) {
-      httpPut(`/users/${props.userId}/skills/${props.skill}.json`, {
-        toastContext,
-        history,
-        body: { level: +selectedLevel }
+      const db = getDatabase();
+      update(ref(db, `/users/${props.userId}/skills/${props.skill}`), {
+        level: +selectedLevel
       }).then(() => {
         toastContext.showToast("Skill updated", "info");
         setInEditMode(false);
         props.onUpdateSkill(+selectedLevel, props.skillIndex, props.userIndex);
       });
     }
-  }, [toastContext, history, props]);
+  }, [toastContext, props]);
 
   return (
     <div
@@ -83,7 +83,7 @@ function KnowledgeLevel(props: {
         icon
       )}
 
-      {props.userId === getUserId() && (
+      {props.userId === getAuth().currentUser?.uid && (
         <button
           className={`btn btn-outline-dark btn-sm shadow-none border-0 ms-1 ${
             inEditMode && "position-relative before-backdrop"

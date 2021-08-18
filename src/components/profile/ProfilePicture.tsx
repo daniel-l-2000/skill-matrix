@@ -1,31 +1,31 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { FaEdit, FaUserCircle } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
-import { getUserId } from "../../api/auth";
-import { httpPost, httpPut, STORAGE_BASE_URL } from "../../api/http";
 import Thumbnail from "../util/Thumbnail";
 import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
-import { useState } from "react";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { getAuth, UserInfo } from "firebase/auth";
 
-function ProfilePicture(props: { profilePictureToken?: string }) {
+function ProfilePicture() {
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const [profilePictureUrl, setProfilePictureUrl] = useState<string>();
 
   const loadingContext = useContext(LoadingContext);
   const toastContext = useContext(ToastContext);
 
-  const history = useHistory();
+  const [profilePictureUrl, setProfilePictureUrl] = useState<string>();
 
-  const filePath = encodeURIComponent(`users/${getUserId()}/profilePicture`);
-  const profilePictureUrl1 = `${STORAGE_BASE_URL}${filePath}?alt=media&token=`;
+  const { uid } = getAuth().currentUser as UserInfo;
+  const profilePicturePath = `/users/${uid}/profilePicture`;
 
   useEffect(() => {
-    if (props.profilePictureToken) {
-      setProfilePictureUrl(`${profilePictureUrl1}${props.profilePictureToken}`);
-    }
-  }, [profilePictureUrl1, props.profilePictureToken]);
+    const storage = getStorage();
+    getDownloadURL(ref(storage, profilePicturePath))
+      .then((url) => {
+        setProfilePictureUrl(url);
+      })
+      .catch(() => {});
+  }, [profilePicturePath]);
 
   const changePicHandler = () => {
     fileInputRef.current?.click();
@@ -36,20 +36,16 @@ function ProfilePicture(props: { profilePictureToken?: string }) {
     if (file) {
       if (file.size >= 2 * 1024 * 1024) {
         toastContext.showToast("File must be less than 2 MB", "warning");
+      } else if (!file.type.match(/image\/(png|jpeg)/)) {
+        toastContext.showToast("File has to be of type PNG or JPEG", "warning");
       } else {
         loadingContext.startLoading();
-        httpPost<any>(`users/${getUserId()}/profilePicture`, {
-          body: file,
-          toastContext,
-          history
-        }).then((res) => {
-          httpPut(`/users/${getUserId()}/profilePictureToken.json`, {
-            body: res.downloadTokens,
-            toastContext,
-            history
-          }).then(() => {
+        const storage = getStorage();
+        uploadBytes(ref(storage, profilePicturePath), file).then(() => {
+          setProfilePictureUrl(undefined);
+          getDownloadURL(ref(storage, profilePictureUrl)).then((url) => {
             loadingContext.stopLoading();
-            setProfilePictureUrl(`${profilePictureUrl1}${res.downloadTokens}`);
+            setProfilePictureUrl(url);
             toastContext.showToast("Profile picture changed", "success");
           });
         });
