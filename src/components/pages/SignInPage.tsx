@@ -1,112 +1,29 @@
-import {
-  ChangeEvent,
-  FormEvent,
-  useContext,
-  useEffect,
-  useReducer
-} from "react";
+import { FormEvent, useContext, useEffect } from "react";
 import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
 import { FaSignInAlt } from "react-icons/fa";
 import { useState } from "react";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-
-interface ReducerAction {
-  type: "USER_INPUT" | "INPUT_BLUR";
-  val?: string;
-}
-
-interface ReducerState {
-  value: string;
-  isValid: boolean | undefined;
-  hasBlurred: boolean;
-}
-
-function emailReducer(
-  state: ReducerState,
-  action: ReducerAction
-): ReducerState {
-  if (action.type === "USER_INPUT") {
-    return {
-      value: action.val ?? "",
-      isValid: action.val?.includes("@"),
-      hasBlurred: state.hasBlurred
-    };
-  }
-  if (action.type === "INPUT_BLUR") {
-    return {
-      value: state.value,
-      isValid: state.value?.includes("@"),
-      hasBlurred: true
-    };
-  }
-  return { value: "", isValid: false, hasBlurred: false };
-}
-
-function passwordReducer(
-  state: ReducerState,
-  action: ReducerAction
-): ReducerState {
-  switch (action.type) {
-    case "USER_INPUT":
-      return {
-        value: action.val ?? "",
-        isValid: !!action.val && action.val.trim().length >= 6,
-        hasBlurred: state.hasBlurred
-      };
-    case "INPUT_BLUR":
-      return {
-        value: state.value,
-        isValid: !!state.value && state.value.trim().length >= 6,
-        hasBlurred: true
-      };
-    default:
-      return { value: "", isValid: false, hasBlurred: false };
-  }
-}
+import useFormControl from "../../hooks/use-form-control";
 
 function SignInPage() {
-  const [formIsValid, setFormIsValid] = useState<boolean>();
+  const [formIsValid, setFormIsValid] = useState<boolean>(false);
 
-  const [emailState, dispatchEmail] = useReducer(emailReducer, {
-    value: "",
-    isValid: false,
-    hasBlurred: false
-  });
-  const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
-    value: "",
-    isValid: false,
-    hasBlurred: false
-  });
+  const emailInput = useFormControl((value) => value.includes("@"));
+  const passwordInput = useFormControl((value) => value.length >= 6);
 
   const loadingContext = useContext(LoadingContext);
   const toastContext = useContext(ToastContext);
 
   useEffect(() => {
     const identifier = setTimeout(() => {
-      setFormIsValid(emailState.isValid && passwordState.isValid);
+      setFormIsValid(emailInput.isValid && passwordInput.isValid);
     }, 500);
 
     return () => {
       clearTimeout(identifier);
     };
-  }, [emailState.isValid, passwordState.isValid]);
-
-  const emailChangeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
-    dispatchEmail({ type: "USER_INPUT", val: ev.target.value });
-  };
-
-  const passwordChangeHandler = (ev: ChangeEvent<HTMLInputElement>) => {
-    dispatchPassword({ type: "USER_INPUT", val: ev.target.value });
-  };
-
-  const validateEmailHandler = () => {
-    dispatchEmail({ type: "INPUT_BLUR" });
-  };
-
-  const validatePasswordHandler = () => {
-    dispatchPassword({ type: "INPUT_BLUR" });
-  };
+  }, [emailInput.isValid, passwordInput.isValid]);
 
   const submitHandler = (ev: FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
@@ -114,12 +31,14 @@ function SignInPage() {
     loadingContext.startLoading();
 
     const auth = getAuth();
-    signInWithEmailAndPassword(auth, emailState.value, passwordState.value)
+    signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value)
       .then(() => {
         loadingContext.stopLoading();
       })
       .catch((err) => {
         loadingContext.stopLoading();
+
+        passwordInput.reset();
 
         switch (err.code) {
           case "auth/wrong-password":
@@ -136,31 +55,43 @@ function SignInPage() {
     <div className="vh-100 d-flex justify-content-center align-items-center">
       <form className="card p-3 w-100 max-card-width" onSubmit={submitHandler}>
         <div className="mb-3">
-          <label htmlFor="email">Email address</label>
+          <label htmlFor="email" className="form-label">
+            Email address
+          </label>
           <input
             type="email"
             id="email"
-            className={`form-control ${
-              emailState.hasBlurred && !emailState.isValid && "is-invalid"
-            }`}
+            value={emailInput.value}
+            className={emailInput.classes}
             required
-            onChange={emailChangeHandler}
-            onBlur={validateEmailHandler}
+            onChange={emailInput.changeHandler}
+            onBlur={emailInput.blurHandler}
           />
+          {emailInput.hasError && (
+            <div className="form-text text-danger">
+              Please enter a valid email address
+            </div>
+          )}
         </div>
         <div className="mb-3">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password" className="form-label">
+            Password
+          </label>
           <input
             type="password"
             id="password"
-            className={`form-control ${
-              passwordState.hasBlurred && !passwordState.isValid && "is-invalid"
-            }`}
+            value={passwordInput.value}
+            className={passwordInput.classes}
             required
             minLength={6}
-            onChange={passwordChangeHandler}
-            onBlur={validatePasswordHandler}
+            onChange={passwordInput.changeHandler}
+            onBlur={passwordInput.blurHandler}
           />
+          {passwordInput.hasError && (
+            <div className="form-text text-danger">
+              The password must have 6 or more characters
+            </div>
+          )}
         </div>
         <div className="d-flex flex-row-reverse">
           <button
