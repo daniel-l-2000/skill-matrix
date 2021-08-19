@@ -18,7 +18,8 @@ interface ReducerAction {
 
 interface ReducerState {
   value: string;
-  isValid?: boolean;
+  isValid: boolean | undefined;
+  hasBlurred: boolean;
 }
 
 function emailReducer(
@@ -26,12 +27,20 @@ function emailReducer(
   action: ReducerAction
 ): ReducerState {
   if (action.type === "USER_INPUT") {
-    return { value: action.val ?? "", isValid: action.val?.includes("@") };
+    return {
+      value: action.val ?? "",
+      isValid: action.val?.includes("@"),
+      hasBlurred: state.hasBlurred
+    };
   }
   if (action.type === "INPUT_BLUR") {
-    return { value: state.value, isValid: state.value?.includes("@") };
+    return {
+      value: state.value,
+      isValid: state.value?.includes("@"),
+      hasBlurred: true
+    };
   }
-  return { value: "", isValid: undefined };
+  return { value: "", isValid: false, hasBlurred: false };
 }
 
 function passwordReducer(
@@ -42,15 +51,17 @@ function passwordReducer(
     case "USER_INPUT":
       return {
         value: action.val ?? "",
-        isValid: !!action.val && action.val.trim().length >= 6
+        isValid: !!action.val && action.val.trim().length >= 6,
+        hasBlurred: state.hasBlurred
       };
     case "INPUT_BLUR":
       return {
         value: state.value,
-        isValid: !!state.value && state.value.trim().length >= 6
+        isValid: !!state.value && state.value.trim().length >= 6,
+        hasBlurred: true
       };
     default:
-      return { value: "", isValid: undefined };
+      return { value: "", isValid: false, hasBlurred: false };
   }
 }
 
@@ -59,11 +70,13 @@ function SignInPage() {
 
   const [emailState, dispatchEmail] = useReducer(emailReducer, {
     value: "",
-    isValid: undefined
+    isValid: false,
+    hasBlurred: false
   });
   const [passwordState, dispatchPassword] = useReducer(passwordReducer, {
     value: "",
-    isValid: undefined
+    isValid: false,
+    hasBlurred: false
   });
 
   const loadingContext = useContext(LoadingContext);
@@ -128,7 +141,7 @@ function SignInPage() {
             type="email"
             id="email"
             className={`form-control ${
-              emailState.isValid === false && "is-invalid"
+              emailState.hasBlurred && !emailState.isValid && "is-invalid"
             }`}
             required
             onChange={emailChangeHandler}
@@ -141,7 +154,7 @@ function SignInPage() {
             type="password"
             id="password"
             className={`form-control ${
-              passwordState.isValid === false && "is-invalid"
+              passwordState.hasBlurred && !passwordState.isValid && "is-invalid"
             }`}
             required
             minLength={6}
