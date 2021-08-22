@@ -4,7 +4,7 @@ import { FaSave, FaSignOutAlt } from "react-icons/fa";
 import ProfilePicture from "../profile/ProfilePicture";
 import { getAuth } from "firebase/auth";
 import useDatabase from "../../hooks/use-database";
-import { useParams } from "react-router-dom";
+import { Prompt, useParams } from "react-router-dom";
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -12,6 +12,7 @@ function ProfilePage() {
   const params = useParams() as { userId: string };
 
   const [name, setName] = useState<string>();
+  const [wasFocused, setWasFocused] = useState(false);
 
   const toastContext = useContext(ToastContext);
 
@@ -38,6 +39,10 @@ function ProfilePage() {
     });
   };
 
+  const focusHandler = () => {
+    setWasFocused(true);
+  };
+
   const signOutHandler = () => {
     getAuth().signOut();
   };
@@ -47,44 +52,59 @@ function ProfilePage() {
   }
 
   return (
-    <div className="d-flex justify-content-center">
-      <form className="card p-2 w-100 max-card-width" onSubmit={submitHandler}>
-        <ProfilePicture userId={params.userId} />
-        <div key={name} className={`mt-2 ${!isSignedInUser && "text-center"}`}>
-          {isSignedInUser ? (
-            <>
-              <label htmlFor="name">Name</label>
-              <input
-                type="text"
-                maxLength={100}
-                className="form-control"
-                id="name"
-                defaultValue={name}
-                ref={nameInputRef}
-              />
-            </>
-          ) : (
-            <span>{name}</span>
-          )}
-        </div>
-        {isSignedInUser && (
-          <div className="mt-2 d-flex justify-content-between">
-            <button className="btn btn-primary" type="submit">
-              <FaSave className="me-1" />
-              Save
-            </button>
-            <button
-              className="btn btn-secondary ms-1"
-              type="button"
-              onClick={signOutHandler}
-            >
-              <FaSignOutAlt className="me-1" />
-              Sign out
-            </button>
+    <>
+      <Prompt
+        when={wasFocused}
+        message={() =>
+          "Do you really want to leave? Your entered data will be lost!"
+        }
+      />
+      <div className="d-flex justify-content-center">
+        <form
+          className="card p-2 w-100 max-card-width"
+          onSubmit={submitHandler}
+          onFocus={focusHandler}
+        >
+          <ProfilePicture userId={params.userId} />
+          <div
+            key={name}
+            className={`mt-2 ${!isSignedInUser && "text-center"}`}
+          >
+            {isSignedInUser ? (
+              <>
+                <label htmlFor="name">Name</label>
+                <input
+                  type="text"
+                  maxLength={100}
+                  className="form-control"
+                  id="name"
+                  defaultValue={name}
+                  ref={nameInputRef}
+                />
+              </>
+            ) : (
+              <span>{name}</span>
+            )}
           </div>
-        )}
-      </form>
-    </div>
+          {isSignedInUser && (
+            <div className="mt-2 d-flex justify-content-between">
+              <button className="btn btn-primary" type="submit">
+                <FaSave className="me-1" />
+                Save
+              </button>
+              <button
+                className="btn btn-secondary ms-1"
+                type="button"
+                onClick={signOutHandler}
+              >
+                <FaSignOutAlt className="me-1" />
+                Sign out
+              </button>
+            </div>
+          )}
+        </form>
+      </div>
+    </>
   );
 }
 
