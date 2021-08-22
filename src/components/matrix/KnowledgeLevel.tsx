@@ -12,7 +12,7 @@ function KnowledgeLevel(props: {
   userIndex: number;
   skill: string;
   userId: string;
-  onUpdateSkill: (level: number, skillIndex: number, userIndex: number) => void;
+  onUpdateSkill: (userId: string, skill: string, level: number) => void;
 }) {
   const [inEditMode, setInEditMode] = useState(false);
 
@@ -53,13 +53,13 @@ function KnowledgeLevel(props: {
       deleteSkill().then(() => {
         toastContext.showToast("Skill removed", "info");
         setInEditMode(false);
-        props.onUpdateSkill(+selectedLevel, props.skillIndex, props.userIndex);
+        props.onUpdateSkill(props.userId, props.skill, +selectedLevel);
       });
     } else if (selectedLevel) {
       createSkill({ level: +selectedLevel }).then(() => {
         toastContext.showToast("Skill updated", "info");
         setInEditMode(false);
-        props.onUpdateSkill(+selectedLevel, props.skillIndex, props.userIndex);
+        props.onUpdateSkill(props.userId, props.skill, +selectedLevel);
       });
     }
   }, [toastContext, props, createSkill, deleteSkill]);
