@@ -50,7 +50,7 @@ function ProfilePage() {
     <div className="d-flex justify-content-center">
       <form className="card p-2 w-100 max-card-width" onSubmit={submitHandler}>
         <ProfilePicture userId={params.userId} />
-        <div className={`mt-2 ${!isSignedInUser && "text-center"}`}>
+        <div key={name} className={`mt-2 ${!isSignedInUser && "text-center"}`}>
           {isSignedInUser ? (
             <>
               <label htmlFor="name">Name</label>
@@ -59,7 +59,7 @@ function ProfilePage() {
                 maxLength={100}
                 className="form-control"
                 id="name"
-                value={name}
+                defaultValue={name}
                 ref={nameInputRef}
               />
             </>

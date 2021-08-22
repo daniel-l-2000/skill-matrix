@@ -28,7 +28,8 @@ function App() {
           </Route>
         )}
         <Route path="*">
-          <Redirect to={auth.isSignedIn ? "matrix" : "/"} />
+          {auth.isSignedIn === false && <Redirect to="/" />}
+          {auth.isSignedIn === true && <Redirect to="/matrix" />}
         </Route>
       </Switch>
     </Layout>
