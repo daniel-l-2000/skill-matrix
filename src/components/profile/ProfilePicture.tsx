@@ -6,7 +6,7 @@ import ToastContext from "../../store/toast-context";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { getAuth } from "firebase/auth";
 
-function ProfilePicture() {
+function ProfilePicture(props: { userId: string }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadingContext = useContext(LoadingContext);
@@ -14,8 +14,9 @@ function ProfilePicture() {
 
   const [profilePictureUrl, setProfilePictureUrl] = useState<string>();
 
-  const user = getAuth().currentUser;
-  const profilePicturePath = `/users/${user?.uid}/profilePicture`;
+  const signedInUserId = getAuth().currentUser?.uid;
+  const profilePicturePath = `/users/${props.userId}/profilePicture`;
+  const isSignedInUser = signedInUserId === props.userId;
 
   useEffect(() => {
     const storage = getStorage();
@@ -61,19 +62,21 @@ function ProfilePicture() {
           src={profilePictureUrl}
           alt="No pic"
           maxSize="8rem"
-          className="border rounded p-1 me-2"
+          className={`border rounded p-1 ${isSignedInUser && "me-2"}`}
         />
       ) : (
-        <FaUserCircle size="2rem" className="me-2" />
+        <FaUserCircle size="2rem" className={isSignedInUser ? "me-2" : ""} />
       )}
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={changePicHandler}
-      >
-        <FaEdit className="me-1" />
-        Change
-      </button>
+      {isSignedInUser && (
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={changePicHandler}
+        >
+          <FaEdit className="me-1" />
+          Change
+        </button>
+      )}
       <input
         type="file"
         className="d-none"

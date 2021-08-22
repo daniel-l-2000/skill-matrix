@@ -1,6 +1,9 @@
+import { getAuth } from "firebase/auth";
 import { NavLink } from "react-router-dom";
 
 function MainNavigation() {
+  const userId = getAuth().currentUser?.uid;
+
   return (
     <nav className="navbar navbar-expand-sm navbar-light bg-light">
       <div className="container-fluid">
@@ -23,7 +26,7 @@ function MainNavigation() {
             </NavLink>
             <NavLink
               className="nav-link"
-              to="/profile"
+              to={`/profiles/${userId}`}
               activeClassName="active"
             >
               Profile

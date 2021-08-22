@@ -1,5 +1,6 @@
 import { getStorage, getDownloadURL, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Thumbnail from "../util/Thumbnail";
 
 function User(props: { index: number; id: string; name: string }) {
@@ -15,7 +16,8 @@ function User(props: { index: number; id: string; name: string }) {
   }, [props.id]);
 
   return (
-    <div
+    <Link
+      to={`profiles/${props.id}`}
       className="p-1 border-top d-flex align-items-center"
       style={{
         gridRow: props.index + 2
@@ -25,7 +27,7 @@ function User(props: { index: number; id: string; name: string }) {
       {profilePictureUrl && (
         <Thumbnail src={profilePictureUrl} className="ms-1" maxSize="1.5rem" />
       )}
-    </div>
+    </Link>
   );
 }
 

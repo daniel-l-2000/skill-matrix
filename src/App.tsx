@@ -23,7 +23,7 @@ function App() {
           </Route>
         )}
         {auth.isSignedIn && (
-          <Route path="/profile">
+          <Route path="/profiles/:userId">
             <ProfilePage></ProfilePage>
           </Route>
         )}
