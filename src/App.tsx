@@ -1,22 +1,34 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import Layout from "./components/layout/Layout";
 import SignInPage from "./components/pages/SignInPage";
 import MatrixPage from "./components/pages/MatrixPage";
 import ProfilePage from "./components/pages/ProfilePage";
+import useAuth from "./hooks/use-auth";
 
 function App() {
+  const auth = useAuth();
+
   return (
     <Layout>
       <Switch>
-        <Route path="/" exact>
-          <SignInPage></SignInPage>
-        </Route>
-        <Route path="/matrix">
-          <MatrixPage></MatrixPage>
-        </Route>
-        <Route path="/profile">
-          <ProfilePage></ProfilePage>
+        {!auth.isSignedIn && (
+          <Route path="/" exact>
+            <SignInPage></SignInPage>
+          </Route>
+        )}
+        {auth.isSignedIn && (
+          <Route path="/matrix">
+            <MatrixPage></MatrixPage>
+          </Route>
+        )}
+        {auth.isSignedIn && (
+          <Route path="/profile">
+            <ProfilePage></ProfilePage>
+          </Route>
+        )}
+        <Route path="*">
+          <Redirect to={auth.isSignedIn ? "matrix" : "/"} />
         </Route>
       </Switch>
     </Layout>
