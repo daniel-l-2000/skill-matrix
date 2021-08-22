@@ -26,7 +26,7 @@ function MainNavigation() {
             </NavLink>
             <NavLink
               className="nav-link"
-              to={`/profiles/${userId}`}
+              to={`/profiles/${userId}?allow-edit=true`}
               activeClassName="active"
             >
               Profile

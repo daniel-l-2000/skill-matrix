@@ -6,6 +6,8 @@ import { useEffect, useReducer } from "react";
 import useDatabase from "../../hooks/use-database";
 import { User as UserModel } from "../../models/user";
 import { Skill as SkillModel } from "../../models/skill";
+import { Route, useRouteMatch } from "react-router-dom";
+import ProfilePage from "./ProfilePage";
 
 type Users = { [key: string]: UserModel };
 type Skills = { [key: string]: SkillModel };
@@ -62,6 +64,8 @@ function MatrixPage() {
   const readUsers = useDatabase<Users>("/users", "read");
   const readSkills = useDatabase<Skills>("/skills", "read");
 
+  const match = useRouteMatch();
+
   useEffect(() => {
     readUsers().then((users) => {
       if (users) {
@@ -94,38 +98,45 @@ function MatrixPage() {
   };
 
   return (
-    <div className={classes.matrixGrid}>
-      {skills.map((s, i) => (
-        <Skill name={s} index={i} key={s}></Skill>
-      ))}
-      {userIds.map((id, i) => {
-        const user = matrixState.users && matrixState.users[id];
-        if (user?.name) {
-          return <User index={i} id={id} name={user.name} key={id}></User>;
-        }
-        return null;
-      })}
-
-      {skills.map((s, si) => {
-        return userIds.map((uid, ui) => {
-          const user = matrixState.users && matrixState.users[uid];
+    <div className="d-flex">
+      <div className={classes.matrixGrid}>
+        {skills.map((s, i) => (
+          <Skill name={s} index={i} key={s}></Skill>
+        ))}
+        {userIds.map((id, i) => {
+          const user = matrixState.users && matrixState.users[id];
           if (user?.name) {
-            const level = user.skills && user.skills[s]?.level;
-            return (
-              <KnowledgeLevel
-                key={`${s}_${uid}`}
-                level={level ?? 0}
-                skillIndex={si}
-                userIndex={ui}
-                skill={s}
-                userId={uid}
-                onUpdateSkill={updateSkillHandler}
-              ></KnowledgeLevel>
-            );
+            return <User index={i} id={id} name={user.name} key={id}></User>;
           }
           return null;
-        });
-      })}
+        })}
+
+        {skills.map((s, si) => {
+          return userIds.map((uid, ui) => {
+            const user = matrixState.users && matrixState.users[uid];
+            if (user?.name) {
+              const level = user.skills && user.skills[s]?.level;
+              return (
+                <KnowledgeLevel
+                  key={`${s}_${uid}`}
+                  level={level ?? 0}
+                  skillIndex={si}
+                  userIndex={ui}
+                  skill={s}
+                  userId={uid}
+                  onUpdateSkill={updateSkillHandler}
+                ></KnowledgeLevel>
+              );
+            }
+            return null;
+          });
+        })}
+      </div>
+      <Route path={`${match.path}/profiles/:userId`}>
+        <div className="ms-3">
+          <ProfilePage />
+        </div>
+      </Route>
     </div>
   );
 }

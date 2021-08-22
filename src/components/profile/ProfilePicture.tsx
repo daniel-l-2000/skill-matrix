@@ -4,9 +4,8 @@ import Thumbnail from "../util/Thumbnail";
 import LoadingContext from "../../store/loading-context";
 import ToastContext from "../../store/toast-context";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import { getAuth } from "firebase/auth";
 
-function ProfilePicture(props: { userId: string }) {
+function ProfilePicture(props: { userId: string; canEdit: boolean }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadingContext = useContext(LoadingContext);
@@ -14,9 +13,7 @@ function ProfilePicture(props: { userId: string }) {
 
   const [profilePictureUrl, setProfilePictureUrl] = useState<string>();
 
-  const signedInUserId = getAuth().currentUser?.uid;
   const profilePicturePath = `/users/${props.userId}/profilePicture`;
-  const isSignedInUser = signedInUserId === props.userId;
 
   useEffect(() => {
     const storage = getStorage();
@@ -62,12 +59,12 @@ function ProfilePicture(props: { userId: string }) {
           src={profilePictureUrl}
           alt="No pic"
           maxSize="8rem"
-          className={`border rounded p-1 ${isSignedInUser && "me-2"}`}
+          className={`border rounded p-1 ${props.canEdit && "me-2"}`}
         />
       ) : (
-        <FaUserCircle size="2rem" className={isSignedInUser ? "me-2" : ""} />
+        <FaUserCircle size="2rem" className={props.canEdit ? "me-2" : ""} />
       )}
-      {isSignedInUser && (
+      {props.canEdit && (
         <button
           type="button"
           className="btn btn-primary"

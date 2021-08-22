@@ -4,12 +4,13 @@ import { FaSave, FaSignOutAlt } from "react-icons/fa";
 import ProfilePicture from "../profile/ProfilePicture";
 import { getAuth } from "firebase/auth";
 import useDatabase from "../../hooks/use-database";
-import { Prompt, useParams } from "react-router-dom";
+import { Prompt, useLocation, useParams } from "react-router-dom";
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   const params = useParams() as { userId: string };
+  const location = useLocation();
 
   const [name, setName] = useState<string>();
   const [wasFocused, setWasFocused] = useState(false);
@@ -19,8 +20,12 @@ function ProfilePage() {
   const readName = useDatabase<string>(`/users/${params.userId}/name`, "read");
   const updateName = useDatabase(`/users/${params.userId}`, "update");
 
+  const queryParams = new URLSearchParams(location.search);
+  const allowEdit = JSON.parse(queryParams.get("allow-edit") ?? "");
   const signedInUserId = getAuth().currentUser?.uid;
+
   const isSignedInUser = signedInUserId === params.userId;
+  const canEdit = isSignedInUser && allowEdit;
 
   useEffect(() => {
     readName().then((result) => {
@@ -65,12 +70,13 @@ function ProfilePage() {
           onSubmit={submitHandler}
           onFocus={focusHandler}
         >
-          <ProfilePicture userId={params.userId} />
-          <div
-            key={name}
-            className={`mt-2 ${!isSignedInUser && "text-center"}`}
-          >
-            {isSignedInUser ? (
+          <ProfilePicture
+            canEdit={canEdit}
+            userId={params.userId}
+            key={params.userId}
+          />
+          <div key={name} className={`mt-2 ${!canEdit && "text-center"}`}>
+            {canEdit ? (
               <>
                 <label htmlFor="name">Name</label>
                 <input
@@ -86,7 +92,7 @@ function ProfilePage() {
               <span>{name}</span>
             )}
           </div>
-          {isSignedInUser && (
+          {canEdit && (
             <div className="mt-2 d-flex justify-content-between">
               <button className="btn btn-primary" type="submit">
                 <FaSave className="me-1" />

@@ -1,10 +1,12 @@
 import { getStorage, getDownloadURL, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import Thumbnail from "../util/Thumbnail";
 
 function User(props: { index: number; id: string; name: string }) {
   const [profilePictureUrl, setProfilePictureUrl] = useState<string>();
+
+  const match = useRouteMatch();
 
   useEffect(() => {
     const storage = getStorage();
@@ -17,7 +19,7 @@ function User(props: { index: number; id: string; name: string }) {
 
   return (
     <Link
-      to={`profiles/${props.id}`}
+      to={`${match.path}/profiles/${props.id}?allow-edit=false`}
       className="p-1 border-top d-flex align-items-center"
       style={{
         gridRow: props.index + 2
