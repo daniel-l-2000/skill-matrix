@@ -1,13 +1,14 @@
-import { useContext } from "react";
-import ToastContext from "../../store/toast-context";
-import Toast from "./Toast";
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/redux-store';
+import Toast from './Toast';
 
 function ToastContainer() {
-  const toastContext = useContext(ToastContext);
+  const toasts = useSelector((state: RootState) => state.toasts.toasts);
+  console.log(toasts.length);
 
   return (
     <div className="toast-container position-fixed before-backdrop start-0 bottom-0 p-3">
-      {toastContext.toasts.map((t) => (
+      {toasts.map((t) => (
         <Toast
           key={+t.timestamp}
           title={t.title}

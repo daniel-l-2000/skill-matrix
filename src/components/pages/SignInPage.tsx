@@ -1,19 +1,20 @@
-import { FormEvent, useContext, useEffect } from "react";
-import LoadingContext from "../../store/loading-context";
-import ToastContext from "../../store/toast-context";
-import { FaSignInAlt } from "react-icons/fa";
-import { useState } from "react";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import useFormControl from "../../hooks/use-form-control";
+import { FormEvent, useContext, useEffect } from 'react';
+import LoadingContext from '../../store/loading-context';
+import { FaSignInAlt } from 'react-icons/fa';
+import { useState } from 'react';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import useFormControl from '../../hooks/use-form-control';
+import useToasts from '../../hooks/use-toasts';
 
 function SignInPage() {
   const [formIsValid, setFormIsValid] = useState<boolean>(false);
 
-  const emailInput = useFormControl((value) => value.includes("@"));
+  const emailInput = useFormControl((value) => value.includes('@'));
   const passwordInput = useFormControl((value) => value.length >= 6);
 
   const loadingContext = useContext(LoadingContext);
-  const toastContext = useContext(ToastContext);
+
+  const showToast = useToasts();
 
   useEffect(() => {
     const identifier = setTimeout(() => {
@@ -41,11 +42,11 @@ function SignInPage() {
         passwordInput.reset();
 
         switch (err.code) {
-          case "auth/wrong-password":
-            toastContext.showToast("Incorrect password", "danger");
+          case 'auth/wrong-password':
+            showToast('Incorrect password', 'danger');
             break;
-          case "auth/user-not-found":
-            toastContext.showToast("Unknown email", "danger");
+          case 'auth/user-not-found':
+            showToast('Unknown email', 'danger');
             break;
         }
       });

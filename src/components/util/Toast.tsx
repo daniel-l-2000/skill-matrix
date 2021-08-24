@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 import {
   FaBeer,
   FaInfoCircle,
   FaCheckCircle,
   FaExclamationCircle,
   FaExclamationTriangle,
-} from "react-icons/fa";
-import { ToastData } from "../../store/toast-context-model";
+} from 'react-icons/fa';
+import { ToastData } from '../../store/redux-store';
 
 function Toast(props: ToastData) {
   const [show, setShow] = useState(false);
@@ -23,27 +23,27 @@ function Toast(props: ToastData) {
 
   let icon = <FaBeer />;
   switch (props.icon) {
-    case "info":
+    case 'info':
       icon = <FaInfoCircle />;
       break;
-    case "success":
+    case 'success':
       icon = <FaCheckCircle />;
       break;
-    case "warning":
+    case 'warning':
       icon = <FaExclamationTriangle />;
       break;
-    case "danger":
+    case 'danger':
       icon = <FaExclamationCircle />;
       break;
   }
 
   return (
-    <div className={`toast fade ${show && "show"}`} role="alert">
+    <div className={`toast fade ${show && 'show'}`} role="alert">
       <div className="toast-header">
         <small className={`me-1 text-${props.icon}`}>{icon}</small>
         <strong className="me-auto">{props.title}</strong>
         <small className="text-muted">
-          {props.timestamp.toLocaleTimeString()}
+          {new Date(props.timestamp).toLocaleTimeString()}
         </small>
       </div>
       {props.description && (

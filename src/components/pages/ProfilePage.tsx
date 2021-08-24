@@ -1,10 +1,10 @@
-import { FormEvent, useContext, useEffect, useRef, useState } from "react";
-import ToastContext from "../../store/toast-context";
-import { FaSave, FaSignOutAlt } from "react-icons/fa";
-import ProfilePicture from "../profile/ProfilePicture";
-import { getAuth } from "firebase/auth";
-import useDatabase from "../../hooks/use-database";
-import { Prompt, useLocation, useParams } from "react-router-dom";
+import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FaSave, FaSignOutAlt } from 'react-icons/fa';
+import ProfilePicture from '../profile/ProfilePicture';
+import { getAuth } from 'firebase/auth';
+import useDatabase from '../../hooks/use-database';
+import { Prompt, useLocation, useParams } from 'react-router-dom';
+import useToasts from '../../hooks/use-toasts';
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -15,13 +15,13 @@ function ProfilePage() {
   const [name, setName] = useState<string>();
   const [wasFocused, setWasFocused] = useState(false);
 
-  const toastContext = useContext(ToastContext);
+  const showToast = useToasts();
 
-  const readName = useDatabase<string>(`/users/${params.userId}/name`, "read");
-  const updateName = useDatabase(`/users/${params.userId}`, "update");
+  const readName = useDatabase<string>(`/users/${params.userId}/name`, 'read');
+  const updateName = useDatabase(`/users/${params.userId}`, 'update');
 
   const queryParams = new URLSearchParams(location.search);
-  const allowEdit = JSON.parse(queryParams.get("allow-edit") ?? "");
+  const allowEdit = JSON.parse(queryParams.get('allow-edit') ?? '');
   const signedInUserId = getAuth().currentUser?.uid;
 
   const isSignedInUser = signedInUserId === params.userId;
@@ -38,9 +38,11 @@ function ProfilePage() {
   const submitHandler = (ev: FormEvent) => {
     ev.preventDefault();
 
+    setWasFocused(false);
+
     const enteredName = nameInputRef.current?.value;
     updateName({ name: enteredName }).then(() => {
-      toastContext.showToast("Changes saved", "success");
+      showToast('Changes saved', 'success');
     });
   };
 
@@ -61,7 +63,7 @@ function ProfilePage() {
       <Prompt
         when={wasFocused}
         message={() =>
-          "Do you really want to leave? Your entered data will be lost!"
+          'Do you really want to leave? Your entered data will be lost!'
         }
       />
       <div className="d-flex justify-content-center">
@@ -75,7 +77,7 @@ function ProfilePage() {
             userId={params.userId}
             key={params.userId}
           />
-          <div key={name} className={`mt-2 ${!canEdit && "text-center"}`}>
+          <div key={name} className={`mt-2 ${!canEdit && 'text-center'}`}>
             {canEdit ? (
               <>
                 <label htmlFor="name">Name</label>

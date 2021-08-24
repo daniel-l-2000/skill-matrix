@@ -1,15 +1,16 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { FaEdit, FaUserCircle } from "react-icons/fa";
-import Thumbnail from "../util/Thumbnail";
-import LoadingContext from "../../store/loading-context";
-import ToastContext from "../../store/toast-context";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { useContext, useEffect, useRef, useState } from 'react';
+import { FaEdit, FaUserCircle } from 'react-icons/fa';
+import Thumbnail from '../util/Thumbnail';
+import LoadingContext from '../../store/loading-context';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import useToasts from '../../hooks/use-toasts';
 
 function ProfilePicture(props: { userId: string; canEdit: boolean }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadingContext = useContext(LoadingContext);
-  const toastContext = useContext(ToastContext);
+
+  const showToast = useToasts();
 
   const [profilePictureUrl, setProfilePictureUrl] = useState<string>();
 
@@ -31,10 +32,10 @@ function ProfilePicture(props: { userId: string; canEdit: boolean }) {
   const fileChangeHandler = () => {
     const file = fileInputRef.current?.files && fileInputRef.current.files[0];
     if (file) {
-      if (file.size >= 2 * 1024 * 1024) {
-        toastContext.showToast("File must be less than 2 MB", "warning");
-      } else if (!file.type.match(/image\/(png|jpeg)/)) {
-        toastContext.showToast("File has to be of type PNG or JPEG", "warning");
+      if (!file.type.match(/image\/(png|jpeg)/)) {
+        showToast('File has to be of type PNG or JPEG', 'warning');
+      } else if (file.size >= 2 * 1024 * 1024) {
+        showToast('File must be less than 2 MB', 'warning');
       } else {
         loadingContext.startLoading();
 
@@ -44,7 +45,7 @@ function ProfilePicture(props: { userId: string; canEdit: boolean }) {
 
           getDownloadURL(ref(storage, profilePictureUrl)).then((url) => {
             loadingContext.stopLoading();
-            toastContext.showToast("Profile picture changed", "success");
+            showToast('Profile picture changed', 'success');
             setProfilePictureUrl(url);
           });
         });
@@ -59,10 +60,10 @@ function ProfilePicture(props: { userId: string; canEdit: boolean }) {
           src={profilePictureUrl}
           alt="No pic"
           maxSize="8rem"
-          className={`border rounded p-1 ${props.canEdit && "me-2"}`}
+          className={`border rounded p-1 ${props.canEdit && 'me-2'}`}
         />
       ) : (
-        <FaUserCircle size="2rem" className={props.canEdit ? "me-2" : ""} />
+        <FaUserCircle size="2rem" className={props.canEdit ? 'me-2' : ''} />
       )}
       {props.canEdit && (
         <button
