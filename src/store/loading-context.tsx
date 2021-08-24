@@ -4,7 +4,7 @@ import { LoadingContextModel } from "./loading-context-model";
 const LoadingContext = createContext<LoadingContextModel>({
   isLoading: false,
   startLoading: () => {},
-  stopLoading: () => {}
+  stopLoading: () => {},
 });
 
 export function LoadingContextProvider(props: { children: any }) {

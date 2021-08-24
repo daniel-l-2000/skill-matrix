@@ -6,7 +6,7 @@ const Thumbnail: StyledComponent<
   { maxSize: string },
   never
 > = styled.img`
-  max-width: ${(props) => props.maxSize};
+  max-width: ${(props) => (props as any).maxSize};
   max-height: ${(props) => props.maxSize};
 `;
 

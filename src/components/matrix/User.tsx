@@ -22,7 +22,7 @@ function User(props: { index: number; id: string; name: string }) {
       to={`${match.path}/profiles/${props.id}?allow-edit=false`}
       className="p-1 border-top d-flex align-items-center"
       style={{
-        gridRow: props.index + 2
+        gridRow: props.index + 2,
       }}
     >
       {props.name}

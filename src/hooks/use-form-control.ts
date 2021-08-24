@@ -47,7 +47,7 @@ function useFormControl(
     classes,
     changeHandler,
     blurHandler,
-    reset
+    reset,
   };
 }
 

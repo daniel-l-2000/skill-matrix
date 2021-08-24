@@ -4,7 +4,7 @@ import {
   FaInfoCircle,
   FaCheckCircle,
   FaExclamationCircle,
-  FaExclamationTriangle
+  FaExclamationTriangle,
 } from "react-icons/fa";
 import { ToastData } from "../../store/toast-context-model";
 

@@ -1,9 +1,8 @@
-import React from "react";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import Layout from "./components/layout/Layout";
-import SignInPage from "./components/pages/SignInPage";
 import MatrixPage from "./components/pages/MatrixPage";
 import ProfilePage from "./components/pages/ProfilePage";
+import SignInPage from "./components/pages/SignInPage";
 import useAuth from "./hooks/use-auth";
 
 function App() {

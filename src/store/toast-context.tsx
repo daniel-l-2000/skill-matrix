@@ -3,7 +3,7 @@ import { IconType, ToastContextModel, ToastData } from "./toast-context-model";
 
 const ToastContext = createContext<ToastContextModel>({
   toasts: [],
-  showToast: () => {}
+  showToast: () => {},
 });
 
 export function ToastContextProvider(props: { children: any }) {
@@ -14,7 +14,7 @@ export function ToastContextProvider(props: { children: any }) {
       title,
       icon,
       description,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     setToasts((prev) => [...prev, toast]);

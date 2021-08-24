@@ -69,7 +69,7 @@ function KnowledgeLevel(props: {
       className="border-start border-top d-flex justify-content-center align-items-center"
       style={{
         gridColumn: props.skillIndex + 2,
-        gridRow: props.userIndex + 2
+        gridRow: props.userIndex + 2,
       }}
     >
       {inEditMode ? (
