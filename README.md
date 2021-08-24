@@ -1,10 +1,2 @@
-# skill-matrix
-
-This tool allows you to manage the skills of selected people. You can easily add, update or remove skills of you and view the skills of every other person.
-
-Built with React, Firebase and CodeSandbox
-
-Credentials:
-
-- d.landgraf2000@icloud.com with 123456
-- john.doe@example.com with Test123
+Moved from CodeSandbox to StackBlitz because the former is producing 'Aw, Snap' all the time 😬
+New repo: https://github.com/daniel-l-2000/skill-matrix-stackblitz
