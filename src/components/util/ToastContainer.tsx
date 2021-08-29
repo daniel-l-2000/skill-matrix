@@ -1,10 +1,9 @@
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/redux-store';
+import { RootState } from '../../store/redux/redux-store';
 import Toast from './Toast';
 
 function ToastContainer() {
   const toasts = useSelector((state: RootState) => state.toasts.toasts);
-  console.log(toasts.length);
 
   return (
     <div className="toast-container position-fixed before-backdrop start-0 bottom-0 p-3">

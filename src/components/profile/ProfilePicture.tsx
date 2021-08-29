@@ -1,7 +1,7 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { FaEdit, FaUserCircle } from 'react-icons/fa';
 import Thumbnail from '../util/Thumbnail';
-import LoadingContext from '../../store/loading-context';
+import LoadingContext from '../../store/context/loading-context';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import useToasts from '../../hooks/use-toasts';
 

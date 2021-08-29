@@ -1,5 +1,9 @@
 import { useDispatch } from 'react-redux';
-import { IconType, ShowToastData, toastActions } from '../store/redux-store';
+import {
+  IconType,
+  ShowToastData,
+  toastActions,
+} from '../store/redux/redux-store';
 
 function useToasts() {
   const dispatch = useDispatch();

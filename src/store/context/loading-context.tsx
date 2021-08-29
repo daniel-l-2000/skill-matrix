@@ -1,5 +1,10 @@
-import { createContext, useState } from "react";
-import { LoadingContextModel } from "./loading-context-model";
+import { createContext, useState } from 'react';
+
+export interface LoadingContextModel {
+  isLoading: boolean;
+  startLoading: () => void;
+  stopLoading: () => void;
+}
 
 const LoadingContext = createContext<LoadingContextModel>({
   isLoading: false,

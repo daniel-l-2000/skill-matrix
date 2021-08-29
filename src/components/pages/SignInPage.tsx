@@ -1,5 +1,5 @@
 import { FormEvent, useContext, useEffect } from 'react';
-import LoadingContext from '../../store/loading-context';
+import LoadingContext from '../../store/context/loading-context';
 import { FaSignInAlt } from 'react-icons/fa';
 import { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';

@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { LoadingContextProvider } from './store/loading-context';
+import { LoadingContextProvider } from './store/context/loading-context';
 import { BrowserRouter } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { Provider } from 'react-redux';
-import store from './store/redux-store';
+import store from './store/redux/redux-store';
 
 initializeApp({
   apiKey: 'AIzaSyDYQ6zBeoqOLoohwVSBU_BvRMdQXGavewU',

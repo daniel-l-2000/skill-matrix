@@ -6,7 +6,7 @@ import {
   FaExclamationCircle,
   FaExclamationTriangle,
 } from 'react-icons/fa';
-import { ToastData } from '../../store/redux-store';
+import { ToastData } from '../../store/redux/redux-store';
 
 function Toast(props: ToastData) {
   const [show, setShow] = useState(false);
