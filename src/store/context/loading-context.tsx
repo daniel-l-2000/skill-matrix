@@ -1,6 +1,6 @@
 import { createContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { backdropActions } from '../redux/redux-store';
+import { backdropActions } from '../redux';
 
 export interface LoadingContextModel {
   isLoading: boolean;

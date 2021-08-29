@@ -7,7 +7,7 @@ import { LoadingContextProvider } from './store/context/loading-context';
 import { BrowserRouter } from 'react-router-dom';
 import { initializeApp } from 'firebase/app';
 import { Provider } from 'react-redux';
-import store from './store/redux/redux-store';
+import store from './store/redux';
 
 initializeApp({
   apiKey: 'AIzaSyDYQ6zBeoqOLoohwVSBU_BvRMdQXGavewU',

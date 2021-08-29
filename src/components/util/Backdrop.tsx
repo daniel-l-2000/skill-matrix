@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/redux/redux-store';
+import { RootState } from '../../store/redux';
 
 function Backdrop() {
   const [showClass, setShowClass] = useState(false);

@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/redux/redux-store';
+import { RootState } from '../../store/redux';
 import Toast from './Toast';
 
 function ToastContainer() {

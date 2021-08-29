@@ -1,4 +1,4 @@
-import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export type IconType = 'info' | 'success' | 'warning' | 'danger';
 
@@ -39,35 +39,6 @@ const toastsSlice = createSlice({
   reducers: { showToast, popToast },
 });
 
-export interface BackdropState {
-  showBackdrop: boolean;
-}
-
-function showBackdrop(state: BackdropState) {
-  state.showBackdrop = true;
-}
-
-function hideBackdrop(state: BackdropState) {
-  state.showBackdrop = false;
-}
-
-const backdropSlice = createSlice({
-  name: 'backdrop',
-  initialState: { showBackdrop: false } as BackdropState,
-  reducers: { showBackdrop, hideBackdrop },
-});
-
-const store = configureStore({
-  reducer: {
-    toasts: toastsSlice.reducer,
-    backdrop: backdropSlice.reducer,
-  },
-});
-
 export const toastActions = toastsSlice.actions;
 
-export const backdropActions = backdropSlice.actions;
-
-export type RootState = ReturnType<typeof store.getState>;
-
-export default store;
+export default toastsSlice.reducer;

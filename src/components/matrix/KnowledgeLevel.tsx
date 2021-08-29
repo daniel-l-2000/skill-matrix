@@ -5,7 +5,7 @@ import { getAuth } from 'firebase/auth';
 import useDatabase from '../../hooks/use-database';
 import useToasts from '../../hooks/use-toasts';
 import { useDispatch } from 'react-redux';
-import { backdropActions } from '../../store/redux/redux-store';
+import { backdropActions } from '../../store/redux';
 
 function KnowledgeLevel(props: {
   level: number;
