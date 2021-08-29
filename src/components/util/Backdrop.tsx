@@ -1,23 +1,37 @@
-import { useEffect, useState } from "react";
-import ReactDOM from "react-dom";
+import { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/redux/redux-store';
 
-function Backdrop(props: { children?: any }) {
-  const [show, setShow] = useState(false);
+function Backdrop() {
+  const [showClass, setShowClass] = useState(false);
+  const [isShowing, setIsShowing] = useState(false);
+
+  const showBackdrop = useSelector(
+    (state: RootState) => state.backdrop.showBackdrop
+  );
 
   useEffect(() => {
-    setTimeout(() => {
-      setShow(true);
-    }, 1);
-  }, []);
+    if (showBackdrop) {
+      setIsShowing(true);
+      setTimeout(() => {
+        setShowClass(true);
+      }, 1);
+    } else {
+      setShowClass(false);
+      setTimeout(() => {
+        setIsShowing(false);
+      }, 150);
+    }
+  }, [showBackdrop]);
 
   return (
     <>
-      {ReactDOM.createPortal(
-        <div className={`modal-backdrop fade ${show && "show"}`}>
-          {props.children}
-        </div>,
-        document.getElementById("backdrop-root") as Element
-      )}
+      {isShowing &&
+        ReactDOM.createPortal(
+          <div className={`modal-backdrop fade ${showClass && 'show'}`}></div>,
+          document.getElementById('backdrop-root') as Element
+        )}
     </>
   );
 }

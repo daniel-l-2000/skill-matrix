@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import {
   IconType,
-  ShowToastData,
+  ShowToastAction,
   toastActions,
 } from '../store/redux/redux-store';
 
@@ -9,7 +9,7 @@ function useToasts() {
   const dispatch = useDispatch();
 
   return (title: string, icon: IconType, description?: string) => {
-    const toast: ShowToastData = { title, icon, description };
+    const toast: ShowToastAction = { title, icon, description };
     dispatch(toastActions.showToast(toast));
     setTimeout(() => {
       dispatch(toastActions.popToast());

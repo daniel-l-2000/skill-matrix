@@ -5,6 +5,7 @@ import LoadingSpinner from '../util/LoadingSpinner';
 import ToastContainer from '../util/ToastContainer';
 import MainNavigation from './MainNavigation';
 import useAuth from '../../hooks/use-auth';
+import Backdrop from '../util/Backdrop';
 
 function Layout(props: { children: any }) {
   const loadingContext = useContext(LoadingContext);
@@ -24,6 +25,7 @@ function Layout(props: { children: any }) {
         <ToastContainer />,
         document.getElementById('toasts-root') as Element
       )}
+      <Backdrop />
     </>
   );
 }

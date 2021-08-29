@@ -20,13 +20,13 @@ initializeApp({
 });
 
 ReactDOM.render(
-  <LoadingContextProvider>
-    <Provider store={store}>
+  <Provider store={store}>
+    <LoadingContextProvider>
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </Provider>
-  </LoadingContextProvider>,
+    </LoadingContextProvider>
+  </Provider>,
   document.getElementById('root')
 );
 

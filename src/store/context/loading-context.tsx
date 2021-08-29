@@ -1,4 +1,6 @@
 import { createContext, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { backdropActions } from '../redux/redux-store';
 
 export interface LoadingContextModel {
   isLoading: boolean;
@@ -15,12 +17,16 @@ const LoadingContext = createContext<LoadingContextModel>({
 export function LoadingContextProvider(props: { children: any }) {
   const [isLoading, setIsLoading] = useState(false);
 
+  const dispatch = useDispatch();
+
   const startLoading = () => {
     setIsLoading(true);
+    dispatch(backdropActions.showBackdrop());
   };
 
   const stopLoading = () => {
     setIsLoading(false);
+    dispatch(backdropActions.hideBackdrop());
   };
 
   const context: LoadingContextModel = { isLoading, startLoading, stopLoading };

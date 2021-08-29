@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { FaEdit, FaTimesCircle } from 'react-icons/fa';
-import Backdrop from '../util/Backdrop';
 import KnowledgeLevelSelector from './KnowledgeLevelSelector';
 import { getAuth } from 'firebase/auth';
 import useDatabase from '../../hooks/use-database';
 import useToasts from '../../hooks/use-toasts';
+import { useDispatch } from 'react-redux';
+import { backdropActions } from '../../store/redux/redux-store';
 
 function KnowledgeLevel(props: {
   level: number;
@@ -17,6 +18,8 @@ function KnowledgeLevel(props: {
   const [inEditMode, setInEditMode] = useState(false);
 
   const levelSelectRef = useRef<HTMLSelectElement>(null);
+
+  const dispatch = useDispatch();
 
   const showToast = useToasts();
 
@@ -44,8 +47,13 @@ function KnowledgeLevel(props: {
   }, [props.level]);
 
   const toggleEditModeHandler = useCallback(() => {
-    setInEditMode((prev) => !prev);
-  }, []);
+    if (inEditMode) {
+      dispatch(backdropActions.hideBackdrop());
+    } else {
+      dispatch(backdropActions.showBackdrop());
+    }
+    setInEditMode(!inEditMode);
+  }, [dispatch, inEditMode]);
 
   const selectLevelHandler = useCallback(() => {
     const selectedLevel = levelSelectRef.current?.value;
@@ -53,16 +61,18 @@ function KnowledgeLevel(props: {
       deleteSkill().then(() => {
         showToast('Skill removed', 'info');
         setInEditMode(false);
+        dispatch(backdropActions.hideBackdrop());
         props.onUpdateSkill(props.userId, props.skill, +selectedLevel);
       });
     } else if (selectedLevel) {
       createSkill({ level: +selectedLevel }).then(() => {
         showToast('Skill updated', 'info');
         setInEditMode(false);
+        dispatch(backdropActions.hideBackdrop());
         props.onUpdateSkill(props.userId, props.skill, +selectedLevel);
       });
     }
-  }, [showToast, props, createSkill, deleteSkill]);
+  }, [showToast, props, createSkill, deleteSkill, dispatch]);
 
   return (
     <div
@@ -92,8 +102,6 @@ function KnowledgeLevel(props: {
           {inEditMode ? <FaTimesCircle /> : <FaEdit />}
         </button>
       )}
-
-      {inEditMode && <Backdrop />}
     </div>
   );
 }

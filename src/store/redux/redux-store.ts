@@ -13,13 +13,13 @@ export interface ToastState {
   toasts: ToastData[];
 }
 
-export interface ShowToastData {
+export interface ShowToastAction {
   title: string;
   icon: IconType;
   description?: string;
 }
 
-function showToast(state: ToastState, action: PayloadAction<ShowToastData>) {
+function showToast(state: ToastState, action: PayloadAction<ShowToastAction>) {
   const toast: ToastData = {
     timestamp: Date.now(),
     title: action.payload.title,
@@ -39,9 +39,34 @@ const toastsSlice = createSlice({
   reducers: { showToast, popToast },
 });
 
-const store = configureStore({ reducer: { toasts: toastsSlice.reducer } });
+export interface BackdropState {
+  showBackdrop: boolean;
+}
+
+function showBackdrop(state: BackdropState) {
+  state.showBackdrop = true;
+}
+
+function hideBackdrop(state: BackdropState) {
+  state.showBackdrop = false;
+}
+
+const backdropSlice = createSlice({
+  name: 'backdrop',
+  initialState: { showBackdrop: false } as BackdropState,
+  reducers: { showBackdrop, hideBackdrop },
+});
+
+const store = configureStore({
+  reducer: {
+    toasts: toastsSlice.reducer,
+    backdrop: backdropSlice.reducer,
+  },
+});
 
 export const toastActions = toastsSlice.actions;
+
+export const backdropActions = backdropSlice.actions;
 
 export type RootState = ReturnType<typeof store.getState>;
 
