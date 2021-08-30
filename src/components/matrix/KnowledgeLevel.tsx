@@ -3,9 +3,8 @@ import { FaEdit, FaTimesCircle } from 'react-icons/fa';
 import KnowledgeLevelSelector from './KnowledgeLevelSelector';
 import { getAuth } from 'firebase/auth';
 import useDatabase from '../../hooks/use-database';
-import useToasts from '../../hooks/use-toasts';
 import { useDispatch } from 'react-redux';
-import { backdropActions } from '../../store/redux';
+import { backdropActions, showAndPopToast } from '../../store/redux';
 
 function KnowledgeLevel(props: {
   level: number;
@@ -20,8 +19,6 @@ function KnowledgeLevel(props: {
   const levelSelectRef = useRef<HTMLSelectElement>(null);
 
   const dispatch = useDispatch();
-
-  const showToast = useToasts();
 
   const createSkill = useDatabase(
     `/users/${props.userId}/skills/${props.skill}`,
@@ -59,20 +56,20 @@ function KnowledgeLevel(props: {
     const selectedLevel = levelSelectRef.current?.value;
     if (selectedLevel === '0') {
       deleteSkill().then(() => {
-        showToast('Skill removed', 'info');
+        dispatch(showAndPopToast('Skill removed', 'info'));
         setInEditMode(false);
         dispatch(backdropActions.hideBackdrop());
         props.onUpdateSkill(props.userId, props.skill, +selectedLevel);
       });
     } else if (selectedLevel) {
       createSkill({ level: +selectedLevel }).then(() => {
-        showToast('Skill updated', 'info');
+        dispatch(showAndPopToast('Skill updated', 'info'));
         setInEditMode(false);
         dispatch(backdropActions.hideBackdrop());
         props.onUpdateSkill(props.userId, props.skill, +selectedLevel);
       });
     }
-  }, [showToast, props, createSkill, deleteSkill, dispatch]);
+  }, [props, createSkill, deleteSkill, dispatch]);
 
   return (
     <div

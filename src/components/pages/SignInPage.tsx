@@ -4,7 +4,8 @@ import { FaSignInAlt } from 'react-icons/fa';
 import { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import useFormControl from '../../hooks/use-form-control';
-import useToasts from '../../hooks/use-toasts';
+import { useDispatch } from 'react-redux';
+import { showAndPopToast } from '../../store/redux';
 
 function SignInPage() {
   const [formIsValid, setFormIsValid] = useState<boolean>(false);
@@ -14,7 +15,7 @@ function SignInPage() {
 
   const loadingContext = useContext(LoadingContext);
 
-  const showToast = useToasts();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const identifier = setTimeout(() => {
@@ -43,10 +44,10 @@ function SignInPage() {
 
         switch (err.code) {
           case 'auth/wrong-password':
-            showToast('Incorrect password', 'danger');
+            dispatch(showAndPopToast('Incorrect password', 'danger'));
             break;
           case 'auth/user-not-found':
-            showToast('Unknown email', 'danger');
+            dispatch(showAndPopToast('Unknown email', 'danger'));
             break;
         }
       });

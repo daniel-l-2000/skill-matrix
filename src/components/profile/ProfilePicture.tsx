@@ -3,14 +3,15 @@ import { FaEdit, FaUserCircle } from 'react-icons/fa';
 import Thumbnail from '../util/Thumbnail';
 import LoadingContext from '../../store/context/loading-context';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-import useToasts from '../../hooks/use-toasts';
+import { useDispatch } from 'react-redux';
+import { showAndPopToast } from '../../store/redux';
 
 function ProfilePicture(props: { userId: string; canEdit: boolean }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadingContext = useContext(LoadingContext);
 
-  const showToast = useToasts();
+  const dispatch = useDispatch();
 
   const [profilePictureUrl, setProfilePictureUrl] = useState<string>();
 
@@ -33,9 +34,11 @@ function ProfilePicture(props: { userId: string; canEdit: boolean }) {
     const file = fileInputRef.current?.files && fileInputRef.current.files[0];
     if (file) {
       if (!file.type.match(/image\/(png|jpeg)/)) {
-        showToast('File has to be of type PNG or JPEG', 'warning');
+        dispatch(
+          showAndPopToast('File has to be of type PNG or JPEG', 'warning')
+        );
       } else if (file.size >= 2 * 1024 * 1024) {
-        showToast('File must be less than 2 MB', 'warning');
+        dispatch(showAndPopToast('File must be less than 2 MB', 'warning'));
       } else {
         loadingContext.startLoading();
 
@@ -45,7 +48,7 @@ function ProfilePicture(props: { userId: string; canEdit: boolean }) {
 
           getDownloadURL(ref(storage, profilePictureUrl)).then((url) => {
             loadingContext.stopLoading();
-            showToast('Profile picture changed', 'success');
+            dispatch(showAndPopToast('Profile picture changed', 'success'));
             setProfilePictureUrl(url);
           });
         });

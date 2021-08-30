@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, Dispatch, PayloadAction } from '@reduxjs/toolkit';
 
 export type IconType = 'info' | 'success' | 'warning' | 'danger';
 
@@ -38,6 +38,20 @@ const toastsSlice = createSlice({
   initialState: { toasts: [] } as ToastState,
   reducers: { showToast, popToast },
 });
+
+export function showAndPopToast(
+  title: string,
+  icon: IconType,
+  description?: string
+) {
+  return (dispatch: Dispatch) => {
+    const toast: ShowToastAction = { title, icon, description };
+    dispatch(toastActions.showToast(toast));
+    setTimeout(() => {
+      dispatch(toastActions.popToast());
+    }, 3000);
+  };
+}
 
 export const toastActions = toastsSlice.actions;
 

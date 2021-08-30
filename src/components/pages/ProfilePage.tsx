@@ -4,7 +4,8 @@ import ProfilePicture from '../profile/ProfilePicture';
 import { getAuth } from 'firebase/auth';
 import useDatabase from '../../hooks/use-database';
 import { Prompt, useLocation, useParams } from 'react-router-dom';
-import useToasts from '../../hooks/use-toasts';
+import { useDispatch } from 'react-redux';
+import { showAndPopToast } from '../../store/redux';
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -15,7 +16,7 @@ function ProfilePage() {
   const [name, setName] = useState<string>();
   const [wasFocused, setWasFocused] = useState(false);
 
-  const showToast = useToasts();
+  const dispatch = useDispatch();
 
   const readName = useDatabase<string>(`/users/${params.userId}/name`, 'read');
   const updateName = useDatabase(`/users/${params.userId}`, 'update');
@@ -42,7 +43,7 @@ function ProfilePage() {
 
     const enteredName = nameInputRef.current?.value;
     updateName({ name: enteredName }).then(() => {
-      showToast('Changes saved', 'success');
+      dispatch(showAndPopToast('Changes saved', 'success'));
     });
   };
 
