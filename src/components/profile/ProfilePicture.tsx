@@ -81,6 +81,7 @@ function ProfilePicture(props: { userId: string; canEdit: boolean }) {
       <input
         type="file"
         className="d-none"
+        placeholder="Profile Picture"
         onChange={fileChangeHandler}
         ref={fileInputRef}
       />

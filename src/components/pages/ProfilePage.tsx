@@ -22,11 +22,8 @@ function ProfilePage() {
   const updateName = useDatabase(`/users/${params.userId}`, 'update');
 
   const queryParams = new URLSearchParams(location.search);
-  const allowEdit = JSON.parse(queryParams.get('allow-edit') ?? '');
-  const signedInUserId = getAuth().currentUser?.uid;
-
-  const isSignedInUser = signedInUserId === params.userId;
-  const canEdit = isSignedInUser && allowEdit;
+  const allowEdit = JSON.parse(queryParams.get('allow-edit') ?? 'false');
+  const canEdit = getAuth().currentUser?.uid === params.userId && allowEdit;
 
   useEffect(() => {
     readName().then((result) => {
