@@ -9,11 +9,19 @@ jest.mock('firebase/auth', () => ({
   getAuth: () => ({ currentUser: { uid: 'QIuSXFa7lgMiWGd7rVCxXpK8FKa2' } }),
 }));
 
-jest.mock('firebase/database', () => ({
-  getDatabase: jest.fn(),
-  ref: jest.fn(),
-  get: () => Promise.resolve({ val: () => 'Daniel' }),
-  update: () => Promise.resolve(),
+jest.mock('firebase/firestore', () => ({
+  getFirestore: jest.fn(),
+  doc: jest.fn(),
+  collection: jest.fn(),
+  addDoc: () => Promise.resolve({ id: '123' }),
+  setDoc: () => Promise.resolve(),
+  getDoc: () =>
+    Promise.resolve({
+      data: () => ({ name: 'Daniel' }),
+      id: '123',
+    }),
+  updateDoc: () => Promise.resolve(),
+  deleteDoc: () => Promise.resolve(),
 }));
 
 jest.mock('firebase/storage', () => ({
@@ -51,7 +59,7 @@ describe('ProfilePage component', () => {
   test('renders toast after Save button was clicked', async () => {
     render(component);
 
-    const saveBtn = (await screen.findByText('Save')) as HTMLButtonElement;
+    const saveBtn = await screen.findByText('Save');
     userEvent.click(saveBtn);
 
     await new Promise((resolve) => setTimeout(resolve, 1000));
