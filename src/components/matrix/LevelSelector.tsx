@@ -1,9 +1,9 @@
-import { forwardRef } from "react";
+import { forwardRef } from 'react';
 
-const KnowledgeLevelSelector = forwardRef<HTMLSelectElement, any>(
+const LevelSelector = forwardRef<HTMLSelectElement, any>(
   (
     props: {
-      initialValue: number;
+      initialValue: number | undefined;
       onChange: () => void;
     },
     ref
@@ -15,8 +15,8 @@ const KnowledgeLevelSelector = forwardRef<HTMLSelectElement, any>(
         value={props.initialValue}
         ref={ref}
       >
-        <option value={0}>
-          {props.initialValue === 0 ? "Select" : "Remove"}
+        <option value={undefined}>
+          {props.initialValue ? 'Remove' : 'Select'}
         </option>
         <option value={1}>+</option>
         <option value={2}>++</option>
@@ -26,4 +26,4 @@ const KnowledgeLevelSelector = forwardRef<HTMLSelectElement, any>(
   }
 );
 
-export default KnowledgeLevelSelector;
+export default LevelSelector;

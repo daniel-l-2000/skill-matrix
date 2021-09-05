@@ -6,6 +6,7 @@ import useDatabase from '../../hooks/use-database';
 import { Prompt, useLocation, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { showAndPopToast } from '../../store/redux';
+import UserModel from '../../models/user';
 
 function ProfilePage() {
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -18,20 +19,25 @@ function ProfilePage() {
 
   const dispatch = useDispatch();
 
-  const readName = useDatabase<string>(`/users/${params.userId}/name`, 'read');
-  const updateName = useDatabase(`/users/${params.userId}`, 'update');
+  const path = `/users/${params.userId}`;
+  const readUser = useDatabase<UserModel>('read', { path });
+  const updateUser = useDatabase('update', { path });
+
+  const auth = getAuth();
 
   const queryParams = new URLSearchParams(location.search);
   const allowEdit = JSON.parse(queryParams.get('allow-edit') ?? 'false');
-  const canEdit = getAuth().currentUser?.uid === params.userId && allowEdit;
+  const canEdit = auth.currentUser?.uid === params.userId && allowEdit;
 
   useEffect(() => {
-    readName().then((result) => {
-      if (result) {
-        setName(result);
+    readUser().then((user) => {
+      if (user) {
+        setName(user.name);
+      } else {
+        setName(auth.currentUser?.email?.split('@')[0]);
       }
     });
-  }, [readName]);
+  }, [readUser, auth]);
 
   const submitHandler = (ev: FormEvent) => {
     ev.preventDefault();
@@ -39,7 +45,7 @@ function ProfilePage() {
     setWasFocused(false);
 
     const enteredName = nameInputRef.current?.value;
-    updateName({ name: enteredName }).then(() => {
+    updateUser({ data: { name: enteredName } }).then(() => {
       dispatch(showAndPopToast('Changes saved', 'success'));
     });
   };
@@ -49,7 +55,7 @@ function ProfilePage() {
   };
 
   const signOutHandler = () => {
-    getAuth().signOut();
+    auth.signOut();
   };
 
   if (!name) {

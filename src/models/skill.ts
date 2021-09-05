@@ -1,3 +1,6 @@
-export interface Skill {
-  description?: string;
+export default interface SkillModel {
+  id: string;
+  userId: string;
+  skillDefinitionId: string;
+  level: number;
 }
