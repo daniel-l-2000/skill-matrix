@@ -99,12 +99,15 @@ function MatrixPage() {
   const match = useRouteMatch();
 
   useEffect(() => {
-    readUsers().then((users) => {
+    const usersListener = readUsers();
+    usersListener((users) => {
       if (users) {
         dispatchMatrix({ type: 'INITIALIZE_USERS', users });
       }
     });
-    readSkillDefinitions().then((skillDefinitions) => {
+
+    const skillDefinitionsListener = readSkillDefinitions();
+    skillDefinitionsListener((skillDefinitions) => {
       if (skillDefinitions) {
         dispatchMatrix({
           type: 'INITIALIZE_SKILL_DEFINITIONS',
@@ -112,7 +115,9 @@ function MatrixPage() {
         });
       }
     });
-    readSkills().then((skills) => {
+
+    const skillsListener = readSkills();
+    skillsListener((skills) => {
       if (skills) {
         dispatchMatrix({ type: 'INITIALIZE_SKILLS', skills });
       }

@@ -15,7 +15,8 @@ function useAuth() {
       setIsSignedIn(!!user);
       if (!!user) {
         const path = `/users/${user.uid}`;
-        readUser({ path }).then((res) => {
+        const userListener = readUser({ path });
+        userListener((res) => {
           if (!res) {
             createUser({
               path,

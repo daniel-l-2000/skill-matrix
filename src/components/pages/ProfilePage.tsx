@@ -29,7 +29,8 @@ function ProfilePage() {
   const allowEdit = JSON.parse(queryParams.get('allow-edit') ?? 'false');
 
   useEffect(() => {
-    readUser().then((user) => {
+    const userListener = readUser();
+    userListener((user) => {
       if (user) {
         setName(user.name);
       } else {
