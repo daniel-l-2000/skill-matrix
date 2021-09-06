@@ -15,11 +15,16 @@ jest.mock('firebase/firestore', () => ({
   collection: jest.fn(),
   addDoc: () => Promise.resolve({ id: '123' }),
   setDoc: () => Promise.resolve(),
-  getDoc: () =>
-    Promise.resolve({
-      data: () => ({ name: 'Daniel' }),
-      id: '123',
-    }),
+  onSnapshot: jest.fn((_: unknown, onNext: (snapshot: any) => void) => {
+    setTimeout(() => {
+      onNext({
+        exists: () => true,
+        data: () => ({ name: 'Daniel' }),
+        id: 'QIuSXFa7lgMiWGd7rVCxXpK8FKa2',
+      });
+    }, 200);
+    return () => {};
+  }),
   updateDoc: () => Promise.resolve(),
   deleteDoc: () => Promise.resolve(),
 }));
