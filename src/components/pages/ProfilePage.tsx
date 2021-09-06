@@ -27,7 +27,6 @@ function ProfilePage() {
 
   const queryParams = new URLSearchParams(location.search);
   const allowEdit = JSON.parse(queryParams.get('allow-edit') ?? 'false');
-  const canEdit = auth.currentUser?.uid === params.userId && allowEdit;
 
   useEffect(() => {
     readUser().then((user) => {
@@ -71,23 +70,26 @@ function ProfilePage() {
         }
       />
       <div className="d-flex justify-content-center">
-        <form
-          className="card p-2 w-100 max-card-width"
-          onSubmit={submitHandler}
-          onFocus={focusHandler}
-        >
+        <div className="card p-2 w-100 max-card-width">
           <ProfilePicture
-            canEdit={canEdit}
+            allowEdit={allowEdit}
             userId={params.userId}
             key={params.userId}
           />
-          <div key={name} className={`mt-2 ${!canEdit && 'text-center'}`}>
-            {canEdit ? (
+          <form
+            onSubmit={submitHandler}
+            onFocus={focusHandler}
+            key={name}
+            className={`mt-2 ${!allowEdit && 'text-center'}`}
+          >
+            {allowEdit ? (
               <>
                 <label htmlFor="name">Name</label>
                 <input
                   type="text"
-                  maxLength={100}
+                  required
+                  minLength={2}
+                  maxLength={20}
                   className="form-control"
                   id="name"
                   defaultValue={name}
@@ -97,15 +99,17 @@ function ProfilePage() {
             ) : (
               <span>{name}</span>
             )}
-          </div>
-          {canEdit && (
-            <div className="mt-2 d-flex justify-content-between">
-              <button className="btn btn-primary" type="submit">
+            {allowEdit && (
+              <button className="mt-2 btn btn-primary" type="submit">
                 <FaSave className="me-1" />
                 Save
               </button>
+            )}
+          </form>
+          {allowEdit && (
+            <div className="mt-2 d-flex justify-content-end">
               <button
-                className="btn btn-secondary ms-1"
+                className="btn btn-secondary btn-sm ms-1"
                 type="button"
                 onClick={signOutHandler}
               >
@@ -114,7 +118,7 @@ function ProfilePage() {
               </button>
             </div>
           )}
-        </form>
+        </div>
       </div>
     </>
   );

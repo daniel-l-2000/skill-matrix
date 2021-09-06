@@ -57,7 +57,7 @@ function Skill(props: {
 
   const selectLevelHandler = async () => {
     const selectedLevel = +(levelSelectRef.current?.value || '');
-    console.log(!!skill, selectedLevel);
+
     if (!skill && selectedLevel) {
       const data = {
         userId: props.userId,

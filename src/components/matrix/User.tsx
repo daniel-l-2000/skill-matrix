@@ -20,7 +20,7 @@ function User(props: { index: number; user: UserModel }) {
 
   return (
     <Link
-      to={`${match.path}/profiles/${props.user.id}?allow-edit=false`}
+      to={`${match.path}/profiles/${props.user.id}`}
       className="p-1 border-top d-flex align-items-center"
       style={{
         gridRow: props.index + 2,

@@ -6,7 +6,7 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { useDispatch } from 'react-redux';
 import { showAndPopToast } from '../../store/redux';
 
-function ProfilePicture(props: { userId: string; canEdit: boolean }) {
+function ProfilePicture(props: { userId: string; allowEdit: boolean }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const loadingContext = useContext(LoadingContext);
@@ -63,12 +63,12 @@ function ProfilePicture(props: { userId: string; canEdit: boolean }) {
           src={profilePictureUrl}
           alt="No pic"
           maxSize="8rem"
-          className={`border rounded p-1 ${props.canEdit && 'me-2'}`}
+          className={`border rounded p-1 ${props.allowEdit && 'me-2'}`}
         />
       ) : (
-        <FaUserCircle size="2rem" className={props.canEdit ? 'me-2' : ''} />
+        <FaUserCircle size="2rem" className={props.allowEdit ? 'me-2' : ''} />
       )}
-      {props.canEdit && (
+      {props.allowEdit && (
         <button
           type="button"
           className="btn btn-primary"
